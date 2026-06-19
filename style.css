@@ -683,41 +683,214 @@ select:focus {
     }
 
     .header h1 {
-        font-size: 1.6em;
+        font-size: 1.8em;
+    }
+
+    .header {
+        padding: 25px 15px;
+        margin-bottom: 20px;
+    }
+
+    .header p {
+        font-size: 1em;
     }
 
     .form-container,
     .admin-panel {
-        padding: 16px;
+        padding: 18px;
+        border-radius: 14px;
     }
 
+    .form-container h2,
     .admin-panel h2 {
-        font-size: 1.1em;
-        margin-top: 20px;
+        font-size: 1.2em;
+        margin-bottom: 18px;
+    }
+
+    form {
+        gap: 14px;
+    }
+
+    label {
+        font-size: 0.9em;
+        margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="password"],
+    input[type="month"],
+    input[type="time"],
+    select {
+        padding: 14px;
+        font-size: 16px;
+        border-radius: 10px;
     }
 
     .time-row {
         grid-template-columns: 1fr;
+        gap: 14px;
+        margin: 10px 0;
     }
 
-    .dashboard {
-        grid-template-columns: 1fr;
+    .time-field input {
+        padding: 14px;
     }
 
-    .list-item {
-        padding: 12px;
+    .work-hours-display {
+        padding: 14px 16px;
+        margin: 12px 0;
+        font-size: 1em;
+    }
+
+    .work-hours-display span {
+        font-size: 1.4em;
     }
 
     .btn-submit,
     .btn-admin,
-    .btn-link {
-        padding: 12px 16px;
+    .btn-link,
+    .btn-logout {
+        padding: 16px 20px;
+        font-size: 0.95em;
+        border-radius: 10px;
+        min-height: 48px;
+    }
+
+    .btn-submit:active {
+        transform: scale(0.98);
+    }
+
+    .form-inline {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .form-inline input,
+    .form-inline button {
+        width: 100%;
+        min-width: auto;
+        padding: 14px;
+        font-size: 16px;
+    }
+
+    .admin-link {
+        padding: 12px;
+        margin-top: 30px;
+    }
+
+    .list {
+        padding: 12px;
+        border-radius: 10px;
+    }
+
+    .list-item {
+        padding: 14px;
+        margin-bottom: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+        border-radius: 10px;
+    }
+
+    .list-item strong {
+        font-size: 1em;
+        margin-bottom: 6px;
+    }
+
+    .list-item small {
+        font-size: 0.85em;
+    }
+
+    .list-item-actions {
+        width: 100%;
+        margin-top: 12px;
+        gap: 8px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .list-item-actions button {
+        padding: 10px;
+        font-size: 0.8em;
+        min-height: 44px;
+    }
+
+    .btn-logout {
+        float: none;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .dashboard {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .dashboard-card {
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    .dashboard-card h3 {
         font-size: 0.9em;
+        margin-bottom: 10px;
+    }
+
+    .dashboard-card .value {
+        font-size: 2.2em;
+    }
+
+    .modal {
+        padding: 15px;
     }
 
     .modal-content {
-        border-radius: 12px;
+        border-radius: 14px;
         max-width: 95%;
-        padding: 20px;
+        padding: 24px;
+    }
+
+    .modal-content h2 {
+        font-size: 1.3em;
+        margin-bottom: 20px;
+    }
+
+    .modal-content input {
+        padding: 14px;
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    .modal-content button {
+        padding: 14px;
+        font-size: 0.95em;
+        min-height: 48px;
+        margin-bottom: 10px;
+    }
+
+    .salary-table {
+        font-size: 0.8em;
+    }
+
+    .salary-table th,
+    .salary-table td {
+        padding: 10px;
+    }
+
+    .back-link {
+        margin-top: 30px;
+    }
+
+    .back-link button {
+        padding: 14px 20px;
+        font-size: 0.95em;
+        width: 100%;
+        min-height: 48px;
+    }
+
+    .section {
+        margin-bottom: 30px;
     }
 }
