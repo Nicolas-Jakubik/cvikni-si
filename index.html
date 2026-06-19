@@ -28,11 +28,21 @@
                     <option value="">-- Vyber projekt --</option>
                 </select>
 
-                <label>Počet hodín:</label>
-                <input type="number" id="hours" min="0" max="24" step="0.5" required placeholder="napr. 8">
-
                 <label>Dátum:</label>
                 <input type="date" id="workDate" required>
+
+                <label>Čas od:</label>
+                <input type="time" id="timeFrom" value="07:00" required>
+
+                <label>Čas do:</label>
+                <input type="time" id="timeTo" value="18:00" required>
+
+                <label>Prestávka (minúty):</label>
+                <input type="number" id="breakMinutes" value="30" min="0" max="480" required>
+
+                <div class="work-hours-display">
+                    <strong>Odpracované hodiny: <span id="hoursCalculated">0</span> h</strong>
+                </div>
 
                 <button type="submit" class="btn-submit">Ulož hodiny</button>
             </form>
