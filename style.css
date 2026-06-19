@@ -233,17 +233,33 @@ select:focus {
 }
 
 /* ============ ADMIN PANEL ============ */
+/* ============ ADMIN PANEL ============ */
 .admin-link {
-    background: white;
-    padding: 20px;
+    background: transparent;
+    padding: 15px;
     border-radius: 12px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: none;
+    margin-top: 40px;
 }
 
 .admin-link p {
-    color: #7f8c8d;
-    margin-bottom: 15px;
+    color: #bdc3c7;
+    margin-bottom: 10px;
+    font-size: 0.85em;
+}
+
+.admin-link .btn-admin {
+    background: #95a5a6;
+    color: white;
+    padding: 10px 20px;
+    font-size: 0.9em;
+    width: auto;
+    max-width: 200px;
+}
+
+.admin-link .btn-admin:hover {
+    background: #7f8c8d;
 }
 
 .admin-panel {
