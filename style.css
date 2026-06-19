@@ -730,12 +730,39 @@ select:focus {
 
     .time-row {
         grid-template-columns: 1fr;
-        gap: 14px;
+        gap: 10px;
         margin: 10px 0;
+        width: 100%;
+    }
+
+    .time-field {
+        width: 100%;
+    }
+
+    .time-field label {
+        font-size: 0.8em;
+        margin-bottom: 4px;
     }
 
     .time-field input {
-        padding: 14px;
+        padding: 12px;
+        font-size: 16px;
+        width: 100%;
+    }
+
+    label {
+        font-size: 0.85em;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="password"],
+    input[type="month"],
+    input[type="time"],
+    select {
+        padding: 12px;
+        font-size: 16px;
     }
 
     .work-hours-display {
