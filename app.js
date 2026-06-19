@@ -1,14 +1,16 @@
 // ============ SUPABASE INICIALIZÁCIA ============
 const SUPABASE_URL = 'https://zduvtihmbppwgukbaaxx.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_ISftud-eccL_0Dw1m1VR0g_O9xgKHR_';
-const ADMIN_PASSWORD = 'admin123'; // Heslo pre admin
+const ADMIN_PASSWORD = 'admin123';
 
 let supabase = null;
 let isAdminLoggedIn = false;
 
 // Inicializácia Supabase
 async function initSupabase() {
-    const { createClient } = supabase_client;
+    if (supabase) return;
+    
+    const { createClient } = window.supabase;
     supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 }
 
@@ -21,6 +23,8 @@ async function loadEmployeesForLead() {
         if (error) throw error;
         
         const select = document.getElementById('employeeName');
+        if (!select) return;
+        
         select.innerHTML = '<option value="">-- Vyber meno --</option>';
         data.forEach(emp => {
             const option = document.createElement('option');
@@ -44,6 +48,8 @@ async function loadProjectsForLead() {
         if (error) throw error;
         
         const select = document.getElementById('projectName');
+        if (!select) return;
+        
         select.innerHTML = '<option value="">-- Vyber projekt --</option>';
         data.forEach(proj => {
             const option = document.createElement('option');
@@ -101,15 +107,16 @@ function goToAdmin() {
 async function initializeAdmin() {
     await initSupabase();
     
-    // Nastav dneš ako predvolený dátum pri filtrovaní
     const today = new Date().toISOString().split('T')[0];
-    document.getElementById('filterDate').value = today;
+    const filterDateInput = document.getElementById('filterDate');
+    if (filterDateInput) filterDateInput.value = today;
     
-    // Nastav tento mesiac ako predvolený
-    const currentMonth = new Date().toISOString().substring(0, 7);
-    document.getElementById('salaryMonth').value = currentMonth;
+    const salaryMonthInput = document.getElementById('salaryMonth');
+    if (salaryMonthInput) {
+        const currentMonth = new Date().toISOString().substring(0, 7);
+        salaryMonthInput.value = currentMonth;
+    }
     
-    // Skontroluj, či si už prihlásený (z localStorage)
     if (localStorage.getItem('adminLoggedIn') === 'true') {
         showAdminPanel();
     }
@@ -133,8 +140,12 @@ function loginAdmin() {
 }
 
 function showAdminPanel() {
-    document.getElementById('loginModal').style.display = 'none';
-    document.getElementById('adminPanel').style.display = 'block';
+    const loginModal = document.getElementById('loginModal');
+    const adminPanel = document.getElementById('adminPanel');
+    
+    if (loginModal) loginModal.style.display = 'none';
+    if (adminPanel) adminPanel.style.display = 'block';
+    
     loadEmployees();
     loadProjects();
     loadAttendance();
@@ -143,9 +154,14 @@ function showAdminPanel() {
 
 function logoutAdmin() {
     localStorage.removeItem('adminLoggedIn');
-    document.getElementById('loginModal').style.display = 'flex';
-    document.getElementById('adminPanel').style.display = 'none';
-    document.getElementById('adminPassword').value = '';
+    const loginModal = document.getElementById('loginModal');
+    const adminPanel = document.getElementById('adminPanel');
+    
+    if (loginModal) loginModal.style.display = 'flex';
+    if (adminPanel) adminPanel.style.display = 'none';
+    
+    const passwordInput = document.getElementById('adminPassword');
+    if (passwordInput) passwordInput.value = '';
 }
 
 function backToLead() {
@@ -158,8 +174,8 @@ async function addEmployee() {
     const name = document.getElementById('newEmployeeName').value;
     const rate = parseFloat(document.getElementById('newEmployeeRate').value);
 
-    if (!name || !rate) {
-        alert('Vyplň všetky polia!');
+    if (!name || !rate || rate <= 0) {
+        alert('Vyplň všetky polia správne!');
         return;
     }
 
@@ -174,6 +190,7 @@ async function addEmployee() {
         document.getElementById('newEmployeeName').value = '';
         document.getElementById('newEmployeeRate').value = '';
         loadEmployees();
+        loadEmployeesForLead();
     } catch (error) {
         alert('Chyba: ' + error.message);
     }
@@ -186,6 +203,7 @@ async function deleteEmployee(empId) {
         const { error } = await supabase.from('employees').delete().eq('id', empId);
         if (error) throw error;
         loadEmployees();
+        loadEmployeesForLead();
     } catch (error) {
         alert('Chyba: ' + error.message);
     }
@@ -197,7 +215,14 @@ async function loadEmployees() {
         if (error) throw error;
 
         const list = document.getElementById('employeesList');
+        if (!list) return;
+        
         list.innerHTML = '';
+
+        if (data.length === 0) {
+            list.innerHTML = '<p>Žiadni zamestnanci</p>';
+            return;
+        }
 
         data.forEach(emp => {
             const div = document.createElement('div');
@@ -236,6 +261,7 @@ async function addProject() {
 
         document.getElementById('newProjectName').value = '';
         loadProjects();
+        loadProjectsForLead();
     } catch (error) {
         alert('Chyba: ' + error.message);
     }
@@ -250,6 +276,7 @@ async function toggleProject(projId, currentStatus) {
 
         if (error) throw error;
         loadProjects();
+        loadProjectsForLead();
     } catch (error) {
         alert('Chyba: ' + error.message);
     }
@@ -262,6 +289,7 @@ async function deleteProject(projId) {
         const { error } = await supabase.from('projects').delete().eq('id', projId);
         if (error) throw error;
         loadProjects();
+        loadProjectsForLead();
     } catch (error) {
         alert('Chyba: ' + error.message);
     }
@@ -273,7 +301,14 @@ async function loadProjects() {
         if (error) throw error;
 
         const list = document.getElementById('projectsList');
+        if (!list) return;
+        
         list.innerHTML = '';
+
+        if (data.length === 0) {
+            list.innerHTML = '<p>Žiadne projekty</p>';
+            return;
+        }
 
         data.forEach(proj => {
             const div = document.createElement('div');
@@ -310,7 +345,15 @@ async function filterAttendance() {
     const filterDate = document.getElementById('filterDate').value;
 
     try {
-        let query = supabase.from('attendance').select('id, employee_id, project_id, hours, date, employees(name), projects(name)').order('date', { ascending: false });
+        let query = supabase.from('attendance').select(`
+            id, 
+            employee_id, 
+            project_id, 
+            hours, 
+            date, 
+            employees(name), 
+            projects(name)
+        `).order('date', { ascending: false });
 
         if (filterDate) {
             query = query.eq('date', filterDate);
@@ -320,6 +363,8 @@ async function filterAttendance() {
         if (error) throw error;
 
         const list = document.getElementById('attendanceList');
+        if (!list) return;
+        
         list.innerHTML = '';
 
         if (data.length === 0) {
@@ -330,10 +375,13 @@ async function filterAttendance() {
         data.forEach(att => {
             const div = document.createElement('div');
             div.className = 'list-item';
+            const empName = att.employees ? att.employees.name : 'N/A';
+            const projName = att.projects ? att.projects.name : 'N/A';
+            
             div.innerHTML = `
                 <div>
-                    <strong>${att.employees.name}</strong><br>
-                    <small>Projekt: ${att.projects.name}</small><br>
+                    <strong>${empName}</strong><br>
+                    <small>Projekt: ${projName}</small><br>
                     <small>Dátum: ${att.date} | Hodiny: ${att.hours}</small>
                 </div>
                 <button onclick="deleteAttendance(${att.id})" class="btn-delete">Zmaž</button>
@@ -361,22 +409,17 @@ async function deleteAttendance(attId) {
 
 async function loadDashboard() {
     try {
-        // Zamestnanci
         const { data: employees } = await supabase.from('employees').select('id');
-        
-        // Projekty
         const { data: projects } = await supabase.from('projects').select('id');
         
-        // Dochádzka dnes
         const today = new Date().toISOString().split('T')[0];
         const { data: todayAttendance } = await supabase
             .from('attendance')
             .select('hours')
             .eq('date', today);
         
-        const totalHoursToday = todayAttendance.reduce((sum, att) => sum + att.hours, 0);
+        const totalHoursToday = todayAttendance.reduce((sum, att) => sum + parseFloat(att.hours), 0);
 
-        // Dochádzka tento mesiac
         const firstDay = new Date();
         firstDay.setDate(1);
         const monthStart = firstDay.toISOString().split('T')[0];
@@ -386,9 +429,11 @@ async function loadDashboard() {
             .select('hours')
             .gte('date', monthStart);
         
-        const totalHoursMonth = monthAttendance.reduce((sum, att) => sum + att.hours, 0);
+        const totalHoursMonth = monthAttendance.reduce((sum, att) => sum + parseFloat(att.hours), 0);
 
         const dashboard = document.getElementById('dashboard');
+        if (!dashboard) return;
+        
         dashboard.innerHTML = `
             <div class="dashboard-card">
                 <h3>👥 Zamestnanci</h3>
@@ -423,14 +468,12 @@ async function calculateSalaries() {
     }
 
     try {
-        // Rozdelenie mesiaca
         const [year, month] = monthInput.split('-');
         const firstHalfStart = `${year}-${month}-01`;
         const firstHalfEnd = `${year}-${month}-15`;
         const secondHalfStart = `${year}-${month}-16`;
         const secondHalfEnd = `${year}-${month}-31`;
 
-        // Načítaj všetkých zamestnancov
         const { data: employees } = await supabase.from('employees').select('*').order('name', { ascending: true });
 
         let html = `<h3>Výplaty za ${monthInput}</h3>`;
@@ -447,7 +490,6 @@ async function calculateSalaries() {
                     <tbody>`;
 
         for (const emp of employees) {
-            // 1. polovica
             const { data: firstHalf } = await supabase
                 .from('attendance')
                 .select('hours')
@@ -455,10 +497,9 @@ async function calculateSalaries() {
                 .gte('date', firstHalfStart)
                 .lte('date', firstHalfEnd);
 
-            const hoursFirstHalf = firstHalf.reduce((sum, att) => sum + att.hours, 0);
+            const hoursFirstHalf = firstHalf.reduce((sum, att) => sum + parseFloat(att.hours), 0);
             const salaryFirstHalf = hoursFirstHalf * emp.hourly_rate;
 
-            // 2. polovica
             const { data: secondHalf } = await supabase
                 .from('attendance')
                 .select('hours')
@@ -466,7 +507,7 @@ async function calculateSalaries() {
                 .gte('date', secondHalfStart)
                 .lte('date', secondHalfEnd);
 
-            const hoursSecondHalf = secondHalf.reduce((sum, att) => sum + att.hours, 0);
+            const hoursSecondHalf = secondHalf.reduce((sum, att) => sum + parseFloat(att.hours), 0);
             const salarySecondHalf = hoursSecondHalf * emp.hourly_rate;
 
             const totalHours = hoursFirstHalf + hoursSecondHalf;
@@ -491,16 +532,22 @@ async function calculateSalaries() {
     }
 }
 
-// ============ NAČÍTAJ SUPABASE JS KNIŽNICU ============
-const script = document.createElement('script');
-script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-script.onload = () => {
-    window.supabase_client = window.supabase;
+// ============ INICIALIZÁCIA ============
+document.addEventListener('DOMContentLoaded', async () => {
+    await initSupabase();
+    
+    // Admin panel
     if (document.getElementById('loginModal')) {
         initializeAdmin();
-    } else {
+    } 
+    // Vedúci formulár
+    else if (document.getElementById('attendanceForm')) {
         loadEmployeesForLead();
         loadProjectsForLead();
+        
+        document.getElementById('attendanceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitAttendance();
+        });
     }
-};
-document.head.appendChild(script);
+});
