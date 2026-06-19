@@ -3,15 +3,18 @@ const SUPABASE_URL = 'https://zduvtihmbppwgukbaaxx.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_ISftud-eccL_0Dw1m1VR0g_O9xgKHR_';
 const ADMIN_PASSWORD = 'admin123';
 
-let supabase = null;
-let isAdminLoggedIn = false;
+let supabaseClient = null;
 
 // Inicializácia Supabase
 async function initSupabase() {
-    if (supabase) return;
+    if (supabaseClient) return;
     
-    const { createClient } = window.supabase;
-    supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    try {
+        const { createClient } = window.supabase;
+        supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+    } catch (error) {
+        console.error('Chyba pri inicializácii Supabase:', error);
+    }
 }
 
 // ============ VEDÚCI FORMULÁR ============
@@ -19,7 +22,7 @@ async function initSupabase() {
 async function loadEmployeesForLead() {
     await initSupabase();
     try {
-        const { data, error } = await supabase.from('employees').select('id, name');
+        const { data, error } = await supabaseClient.from('employees').select('id, name');
         if (error) throw error;
         
         const select = document.getElementById('employeeName');
@@ -40,7 +43,7 @@ async function loadEmployeesForLead() {
 async function loadProjectsForLead() {
     await initSupabase();
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('projects')
             .select('id, name')
             .eq('is_active', true);
@@ -76,7 +79,7 @@ async function submitAttendance() {
     }
 
     try {
-        const { error } = await supabase.from('attendance').insert({
+        const { error } = await supabaseClient.from('attendance').insert({
             employee_id: employeeId,
             project_id: projectId,
             hours: hours,
@@ -180,7 +183,7 @@ async function addEmployee() {
     }
 
     try {
-        const { error } = await supabase.from('employees').insert({
+        const { error } = await supabaseClient.from('employees').insert({
             name: name,
             hourly_rate: rate
         });
@@ -200,7 +203,7 @@ async function deleteEmployee(empId) {
     if (!confirm('Naozaj chceš zmazať zamestnanca?')) return;
 
     try {
-        const { error } = await supabase.from('employees').delete().eq('id', empId);
+        const { error } = await supabaseClient.from('employees').delete().eq('id', empId);
         if (error) throw error;
         loadEmployees();
         loadEmployeesForLead();
@@ -211,7 +214,7 @@ async function deleteEmployee(empId) {
 
 async function loadEmployees() {
     try {
-        const { data, error } = await supabase.from('employees').select('*').order('name', { ascending: true });
+        const { data, error } = await supabaseClient.from('employees').select('*').order('name', { ascending: true });
         if (error) throw error;
 
         const list = document.getElementById('employeesList');
@@ -252,7 +255,7 @@ async function addProject() {
     }
 
     try {
-        const { error } = await supabase.from('projects').insert({
+        const { error } = await supabaseClient.from('projects').insert({
             name: name,
             is_active: true
         });
@@ -269,7 +272,7 @@ async function addProject() {
 
 async function toggleProject(projId, currentStatus) {
     try {
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from('projects')
             .update({ is_active: !currentStatus })
             .eq('id', projId);
@@ -286,7 +289,7 @@ async function deleteProject(projId) {
     if (!confirm('Naozaj chceš zmazať projekt?')) return;
 
     try {
-        const { error } = await supabase.from('projects').delete().eq('id', projId);
+        const { error } = await supabaseClient.from('projects').delete().eq('id', projId);
         if (error) throw error;
         loadProjects();
         loadProjectsForLead();
@@ -297,7 +300,7 @@ async function deleteProject(projId) {
 
 async function loadProjects() {
     try {
-        const { data, error } = await supabase.from('projects').select('*').order('name', { ascending: true });
+        const { data, error } = await supabaseClient.from('projects').select('*').order('name', { ascending: true });
         if (error) throw error;
 
         const list = document.getElementById('projectsList');
@@ -345,7 +348,7 @@ async function filterAttendance() {
     const filterDate = document.getElementById('filterDate').value;
 
     try {
-        let query = supabase.from('attendance').select(`
+        let query = supabaseClient.from('attendance').select(`
             id, 
             employee_id, 
             project_id, 
@@ -397,7 +400,7 @@ async function deleteAttendance(attId) {
     if (!confirm('Naozaj chceš zmazať záznam?')) return;
 
     try {
-        const { error } = await supabase.from('attendance').delete().eq('id', attId);
+        const { error } = await supabaseClient.from('attendance').delete().eq('id', attId);
         if (error) throw error;
         loadAttendance();
     } catch (error) {
@@ -409,27 +412,27 @@ async function deleteAttendance(attId) {
 
 async function loadDashboard() {
     try {
-        const { data: employees } = await supabase.from('employees').select('id');
-        const { data: projects } = await supabase.from('projects').select('id');
+        const { data: employees } = await supabaseClient.from('employees').select('id');
+        const { data: projects } = await supabaseClient.from('projects').select('id');
         
         const today = new Date().toISOString().split('T')[0];
-        const { data: todayAttendance } = await supabase
+        const { data: todayAttendance } = await supabaseClient
             .from('attendance')
             .select('hours')
             .eq('date', today);
         
-        const totalHoursToday = todayAttendance.reduce((sum, att) => sum + parseFloat(att.hours), 0);
+        const totalHoursToday = todayAttendance ? todayAttendance.reduce((sum, att) => sum + parseFloat(att.hours), 0) : 0;
 
         const firstDay = new Date();
         firstDay.setDate(1);
         const monthStart = firstDay.toISOString().split('T')[0];
         
-        const { data: monthAttendance } = await supabase
+        const { data: monthAttendance } = await supabaseClient
             .from('attendance')
             .select('hours')
             .gte('date', monthStart);
         
-        const totalHoursMonth = monthAttendance.reduce((sum, att) => sum + parseFloat(att.hours), 0);
+        const totalHoursMonth = monthAttendance ? monthAttendance.reduce((sum, att) => sum + parseFloat(att.hours), 0) : 0;
 
         const dashboard = document.getElementById('dashboard');
         if (!dashboard) return;
@@ -437,11 +440,11 @@ async function loadDashboard() {
         dashboard.innerHTML = `
             <div class="dashboard-card">
                 <h3>👥 Zamestnanci</h3>
-                <div class="value">${employees.length}</div>
+                <div class="value">${employees ? employees.length : 0}</div>
             </div>
             <div class="dashboard-card">
                 <h3>📦 Projekty</h3>
-                <div class="value">${projects.length}</div>
+                <div class="value">${projects ? projects.length : 0}</div>
             </div>
             <div class="dashboard-card">
                 <h3>⏱️ Hodiny dnes</h3>
@@ -474,7 +477,7 @@ async function calculateSalaries() {
         const secondHalfStart = `${year}-${month}-16`;
         const secondHalfEnd = `${year}-${month}-31`;
 
-        const { data: employees } = await supabase.from('employees').select('*').order('name', { ascending: true });
+        const { data: employees } = await supabaseClient.from('employees').select('*').order('name', { ascending: true });
 
         let html = `<h3>Výplaty za ${monthInput}</h3>`;
         html += `<table class="salary-table">
@@ -490,24 +493,24 @@ async function calculateSalaries() {
                     <tbody>`;
 
         for (const emp of employees) {
-            const { data: firstHalf } = await supabase
+            const { data: firstHalf } = await supabaseClient
                 .from('attendance')
                 .select('hours')
                 .eq('employee_id', emp.id)
                 .gte('date', firstHalfStart)
                 .lte('date', firstHalfEnd);
 
-            const hoursFirstHalf = firstHalf.reduce((sum, att) => sum + parseFloat(att.hours), 0);
+            const hoursFirstHalf = firstHalf ? firstHalf.reduce((sum, att) => sum + parseFloat(att.hours), 0) : 0;
             const salaryFirstHalf = hoursFirstHalf * emp.hourly_rate;
 
-            const { data: secondHalf } = await supabase
+            const { data: secondHalf } = await supabaseClient
                 .from('attendance')
                 .select('hours')
                 .eq('employee_id', emp.id)
                 .gte('date', secondHalfStart)
                 .lte('date', secondHalfEnd);
 
-            const hoursSecondHalf = secondHalf.reduce((sum, att) => sum + parseFloat(att.hours), 0);
+            const hoursSecondHalf = secondHalf ? secondHalf.reduce((sum, att) => sum + parseFloat(att.hours), 0) : 0;
             const salarySecondHalf = hoursSecondHalf * emp.hourly_rate;
 
             const totalHours = hoursFirstHalf + hoursSecondHalf;
