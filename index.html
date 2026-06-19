@@ -2,64 +2,67 @@
 <html lang="sk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CvikniSi - Vedúci</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
+<body class="lead-page">
+    <div class="container lead-container">
+        <div class="header-simple">
             <h1>CvikniSi</h1>
-            <p>CvikniSi hodiny moderným štýlom!</p>
         </div>
 
         <div class="form-container">
-            <h2>Zadaj odpracované hodiny</h2>
+            <h2>Zadaj hodiny</h2>
             
             <form id="attendanceForm">
-                <label>Meno:</label>
-                <select id="employeeName" required>
-                    <option value="">-- Vyber meno --</option>
-                </select>
-
-                <label>Projekt:</label>
-                <select id="projectName" required>
-                    <option value="">-- Vyber projekt --</option>
-                </select>
-
-                <label>Dátum:</label>
-                <input type="date" id="workDate" required>
-
-                <div class="time-row">
-                    <div class="time-field">
-                        <label>Čas od:</label>
-                        <input type="time" id="timeFrom" value="07:00" required>
-                    </div>
-
-                    <div class="time-field">
-                        <label>Čas do:</label>
-                        <input type="time" id="timeTo" value="18:00" required>
-                    </div>
-
-                    <div class="time-field">
-                        <label>Prestávka (min):</label>
-                        <input type="number" id="breakMinutes" value="30" min="0" max="480" required>
-                    </div>
+                <div class="form-group">
+                    <label>Meno:</label>
+                    <select id="employeeName" required>
+                        <option value="">Vyber meno</option>
+                    </select>
                 </div>
 
-                <div class="work-hours-display">
-                    <strong>Odpracované hodiny: <span id="hoursCalculated">0</span> h</strong>
+                <div class="form-group">
+                    <label>Projekt:</label>
+                    <select id="projectName" required>
+                        <option value="">Vyber projekt</option>
+                    </select>
                 </div>
 
-                <button type="submit" class="btn-submit">Ulož hodiny</button>
+                <div class="form-group">
+                    <label>Dátum:</label>
+                    <input type="date" id="workDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Od:</label>
+                    <input type="time" id="timeFrom" value="07:00" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Do:</label>
+                    <input type="time" id="timeTo" value="18:00" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Prestávka (min):</label>
+                    <input type="number" id="breakMinutes" value="30" min="0" max="480" required>
+                </div>
+
+                <div class="hours-box">
+                    <span id="hoursCalculated">0</span> h
+                </div>
+
+                <button type="submit" class="btn-submit">Ulož</button>
             </form>
 
             <div id="message" class="message"></div>
         </div>
 
-        <div class="admin-link">
-            <button class="btn-admin" onclick="goToAdmin()">Prejsť do Admin Panelu</button>
+        <div class="admin-btn-container">
+            <button class="btn-admin-small" onclick="goToAdmin()">Admin</button>
         </div>
     </div>
 

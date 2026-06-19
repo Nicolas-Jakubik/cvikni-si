@@ -11,10 +11,192 @@ html, body {
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     color: #1e293b;
     line-height: 1.6;
     min-height: 100vh;
+}
+
+/* ============ LEAD PAGE (MOBILE FIRST) ============ */
+.lead-page {
+    background: #f5f5f5;
+}
+
+.lead-container {
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.header-simple {
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    padding: 20px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+.header-simple h1 {
+    font-size: 1.8em;
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.form-container {
+    background: white;
+    margin: 0;
+    padding: 16px;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+    border-top: 4px solid #ff6b35;
+}
+
+.form-container h2 {
+    font-size: 1.1em;
+    margin-bottom: 16px;
+    color: #333;
+    font-weight: 700;
+}
+
+.form-group {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 0.8em;
+    font-weight: 700;
+    color: #ff6b35;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group select {
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    background: #f9f9f9;
+    width: 100%;
+    min-height: 44px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #ff6b35;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.hours-box {
+    background: #f0f4f8;
+    padding: 14px;
+    text-align: center;
+    border-radius: 6px;
+    margin: 14px 0;
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #333;
+    border-left: 4px solid #ff6b35;
+    letter-spacing: 0.5px;
+}
+
+.hours-box span {
+    color: #ff6b35;
+    font-size: 1.4em;
+    font-weight: 900;
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1em;
+    font-weight: 700;
+    width: 100%;
+    cursor: pointer;
+    text-transform: uppercase;
+    min-height: 44px;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+.btn-submit:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+}
+
+.message {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9em;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message.success {
+    background: #d5f4e6;
+    color: #27ae60;
+    border-left: 4px solid #27ae60;
+}
+
+.message.error {
+    background: #fadbd8;
+    color: #c0392b;
+    border-left: 4px solid #c0392b;
+}
+
+.admin-btn-container {
+    padding: 16px;
+    text-align: center;
+    background: white;
+}
+
+.btn-admin-small {
+    background: #64748b;
+    color: white;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85em;
+    font-weight: 700;
+    cursor: pointer;
+    min-height: 40px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+}
+
+.btn-admin-small:active {
+    opacity: 0.9;
+}
+
+/* ============ ADMIN PAGE ============ */
+body:not(.lead-page) {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 }
 
 .container {
@@ -67,231 +249,24 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* ============ FORMULÁR - VŠEOBECNE ============ */
-.form-container,
+/* ============ ADMIN PANEL FORMULÁR ============ */
 .admin-panel {
     background: white;
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     border-top: 4px solid #ff6b35;
-}
-
-.form-container {
-    margin-bottom: 25px;
-}
-
-.form-container h2,
-.admin-panel h2 {
-    color: #0f172a;
-    margin-bottom: 20px;
-    font-size: 1.3em;
-    font-weight: 700;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-label {
-    font-weight: 700;
-    color: #ff6b35;
-    font-size: 0.9em;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    display: block;
-    margin-bottom: 5px;
-}
-
-input[type="text"],
-input[type="number"],
-input[type="date"],
-input[type="password"],
-input[type="month"],
-input[type="time"],
-select {
-    width: 100%;
-    padding: 12px 14px;
-    border: 2px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 1em;
-    background: #f8fafc;
-    transition: all 0.3s ease;
-    font-weight: 500;
-    box-sizing: border-box;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus,
-input[type="date"]:focus,
-input[type="password"]:focus,
-input[type="month"]:focus,
-input[type="time"]:focus,
-select:focus {
-    outline: none;
-    border-color: #ff6b35;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
-}
-
-/* ============ TIME ROW - ČASY VEDĽA SEBE ============ */
-.time-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin: 10px 0;
-}
-
-.time-field {
-    display: flex;
-    flex-direction: column;
-}
-
-.time-field label {
-    margin-bottom: 5px;
-    font-size: 0.85em;
-}
-
-.time-field input {
-    width: 100%;
-}
-
-/* ============ ODPRACOVANÉ HODINY ============ */
-.work-hours-display {
-    background: #f0f4f8;
-    padding: 12px 16px;
-    border-radius: 8px;
-    text-align: center;
-    margin: 12px 0;
-    border-left: 3px solid #ff6b35;
-    color: #0f172a;
-    font-size: 0.95em;
-    font-weight: 600;
-}
-
-.work-hours-display span {
-    color: #ff6b35;
-    font-size: 1.3em;
-    font-weight: 800;
-}
-
-/* ============ TLAČIDLÁ ============ */
-.btn-submit,
-.btn-admin,
-.btn-logout,
-.btn-link,
-.btn-delete,
-.btn-toggle {
-    padding: 14px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.95em;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-sizing: border-box;
-}
-
-.btn-submit {
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-    color: white;
-    width: 100%;
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
-}
-
-.btn-submit:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
-}
-
-.btn-admin {
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-    color: white;
-    padding: 14px 28px;
-    font-size: 0.95em;
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
-}
-
-.btn-admin:hover {
-    transform: translateY(-2px);
-}
-
-.btn-logout {
-    background: #e74c3c;
-    color: white;
-    float: right;
-    margin-bottom: 20px;
-}
-
-.btn-logout:hover {
-    background: #c0392b;
-}
-
-.btn-link {
-    background: #64748b;
-    color: white;
-    width: 100%;
-}
-
-.btn-link:hover {
-    background: #475569;
-}
-
-.btn-delete {
-    background: #e74c3c;
-    color: white;
-    padding: 10px 12px;
-    font-size: 0.85em;
-}
-
-.btn-delete:hover {
-    background: #c0392b;
-}
-
-.btn-toggle {
-    background: #27ae60;
-    color: white;
-    padding: 10px 12px;
-    font-size: 0.85em;
-}
-
-.btn-toggle:hover {
-    background: #229954;
-}
-
-.btn-toggle.inactive {
-    background: #95a5a6;
-}
-
-/* ============ ADMIN LINK ============ */
-.admin-link {
-    background: transparent;
-    padding: 15px;
-    text-align: center;
-    margin-top: 30px;
-    box-shadow: none;
-    border: none;
-}
-
-.admin-link p {
-    color: rgba(255, 255, 255, 0.6);
-    margin-bottom: 10px;
-    font-size: 0.85em;
-}
-
-/* ============ ADMIN PANEL ============ */
-.admin-panel {
     margin-bottom: 25px;
 }
 
 .admin-panel h2 {
+    color: #0f172a;
     margin-top: 30px;
+    margin-bottom: 20px;
     border-bottom: 3px solid #ff6b35;
     padding-bottom: 10px;
+    font-size: 1.3em;
+    font-weight: 700;
     text-transform: uppercase;
 }
 
@@ -310,10 +285,37 @@ select:focus {
 .form-inline button {
     flex: 1;
     min-width: 150px;
+    padding: 12px 14px;
+    font-size: 1em;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.form-inline input:focus {
+    outline: none;
+    border-color: #ff6b35;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
 }
 
 .form-inline button {
-    min-width: 140px;
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+    min-height: auto;
+}
+
+.form-inline button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
 }
 
 /* ============ LISTY ============ */
@@ -340,17 +342,24 @@ select:focus {
     align-items: center;
     border-left: 4px solid #ff6b35;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.list-item:hover {
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.15);
 }
 
 .list-item strong {
     color: #0f172a;
     display: block;
     margin-bottom: 4px;
+    font-weight: 700;
 }
 
 .list-item small {
     color: #64748b;
     display: block;
+    font-size: 0.85em;
 }
 
 .list-item-actions {
@@ -359,29 +368,51 @@ select:focus {
     flex-wrap: wrap;
 }
 
+.btn-delete {
+    background: #e74c3c;
+    color: white;
+    padding: 10px 12px;
+    font-size: 0.85em;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+    background: #c0392b;
+    transform: translateY(-1px);
+}
+
+.btn-toggle {
+    background: #27ae60;
+    color: white;
+    padding: 10px 12px;
+    font-size: 0.85em;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+}
+
+.btn-toggle:hover {
+    background: #229954;
+    transform: translateY(-1px);
+}
+
+.btn-toggle.inactive {
+    background: #95a5a6;
+}
+
 .inactive-project {
     opacity: 0.6;
     text-decoration: line-through;
-}
-
-/* ============ HLÁŠKY ============ */
-.message {
-    padding: 14px;
-    border-radius: 8px;
-    margin-top: 12px;
-    text-align: center;
-    font-weight: 600;
-    font-size: 0.9em;
-}
-
-.message.success {
-    background: #d5f4e6;
-    color: #27ae60;
-}
-
-.message.error {
-    background: #fadbd8;
-    color: #c0392b;
 }
 
 /* ============ MODÁL ============ */
@@ -407,6 +438,18 @@ select:focus {
     max-width: 400px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     border-top: 4px solid #ff6b35;
+    animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .modal-content h2 {
@@ -414,16 +457,47 @@ select:focus {
     margin-bottom: 20px;
     text-align: center;
     font-weight: 700;
+    font-size: 1.3em;
 }
 
 .modal-content input {
     width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1em;
+    background: #f8fafc;
     margin-bottom: 12px;
+    transition: all 0.3s ease;
+}
+
+.modal-content input:focus {
+    outline: none;
+    border-color: #ff6b35;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
 }
 
 .modal-content button {
     width: 100%;
+    padding: 12px 14px;
     margin-bottom: 10px;
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+    transition: all 0.2s ease;
+}
+
+.modal-content button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
 }
 
 .modal-content hr {
@@ -436,6 +510,7 @@ select:focus {
     text-align: center;
     color: #64748b;
     font-size: 0.85em;
+    margin: 10px 0;
 }
 
 /* ============ DASHBOARD ============ */
@@ -452,11 +527,19 @@ select:focus {
     border-radius: 10px;
     text-align: center;
     box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3);
+    transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 32px rgba(255, 107, 53, 0.4);
 }
 
 .dashboard-card h3 {
     font-size: 0.9em;
     margin-bottom: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
 .dashboard-card .value {
@@ -478,6 +561,8 @@ select:focus {
     padding: 12px;
     text-align: left;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .salary-table td {
@@ -506,50 +591,144 @@ select:focus {
     transition: all 0.3s;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
 }
 
 .back-link button:hover {
     background: #ff6b35;
     color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 107, 53, 0.3);
+}
+
+.btn-logout {
+    background: #e74c3c;
+    color: white;
+    float: right;
+    margin-bottom: 20px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.btn-logout:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+}
+
+.btn-link {
+    background: #64748b;
+    color: white;
+    width: 100%;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
+}
+
+.btn-link:hover {
+    background: #475569;
+    transform: translateY(-2px);
 }
 
 /* ============ RESPONSIVE - TABLET (768px) ============ */
-@media (max-width: 768px) {
+@media (min-width: 768px) {
+    .lead-page {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+
+    .lead-container {
+        max-width: 600px;
+        padding: 20px;
+        margin: 0 auto;
+    }
+
+    .header-simple {
+        padding: 40px 30px;
+        margin-bottom: 25px;
+        border-radius: 12px;
+    }
+
+    .header-simple h1 {
+        font-size: 2.2em;
+    }
+
+    .form-container {
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .form-container h2 {
+        font-size: 1.3em;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        margin-bottom: 6px;
+        font-size: 0.9em;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 12px 14px;
+        font-size: 1em;
+    }
+
+    .hours-box {
+        padding: 16px;
+        margin: 16px 0;
+        font-size: 1.1em;
+    }
+
+    .admin-btn-container {
+        text-align: center;
+        padding: 0;
+        margin-top: 20px;
+        background: transparent;
+    }
+
+    .btn-admin-small {
+        padding: 12px 32px;
+        font-size: 0.9em;
+    }
+
     .container {
-        padding: 15px;
-    }
-
-    .header h1 {
-        font-size: 2em;
-    }
-
-    .form-container,
-    .admin-panel {
         padding: 20px;
     }
 
     .form-inline {
-        flex-direction: column;
+        flex-direction: row;
     }
 
     .form-inline input,
     .form-inline button {
-        width: 100%;
+        flex: 1;
         min-width: auto;
     }
 
-    .time-row {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
     .list-item {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
     }
 
     .list-item-actions {
-        width: 100%;
-        margin-top: 10px;
+        flex-direction: row;
     }
 
     .dashboard {
@@ -557,216 +736,45 @@ select:focus {
     }
 
     .btn-logout {
-        float: none;
-        width: 100%;
-    }
-}
-
-/* ============ RESPONSIVE - iPHONE (375px - 428px) ============ */
-@media (max-width: 390px) {
-    .container {
-        padding: 10px;
-    }
-
-    body {
-        padding-left: env(safe-area-inset-left);
-        padding-right: env(safe-area-inset-right);
-        padding-bottom: env(safe-area-inset-bottom);
-    }
-
-    .header {
-        padding: 18px 12px;
-        margin-bottom: 12px;
-        border-radius: 10px;
-    }
-
-    .header h1 {
-        font-size: 1.4em;
-        margin-bottom: 4px;
-    }
-
-    .header p {
-        font-size: 0.85em;
-    }
-
-    .form-container,
-    .admin-panel {
-        padding: 12px;
-        border-radius: 8px;
-        margin-bottom: 15px;
-    }
-
-    .form-container h2,
-    .admin-panel h2 {
-        font-size: 1em;
-        margin-bottom: 10px;
-    }
-
-    form {
-        gap: 8px;
-    }
-
-    label {
-        font-size: 0.75em;
-        margin-bottom: 3px;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    input[type="password"],
-    input[type="month"],
-    input[type="time"],
-    select {
-        padding: 10px 10px;
-        font-size: 16px;
-        min-height: 44px;
-        border-radius: 6px;
-    }
-
-    .time-row {
-        grid-template-columns: 1fr;
-        gap: 8px;
-        margin: 6px 0;
-    }
-
-    .time-field label {
-        font-size: 0.7em;
-        margin-bottom: 2px;
-    }
-
-    .work-hours-display {
-        padding: 10px;
-        margin: 8px 0;
-        font-size: 0.85em;
-        border-radius: 6px;
-    }
-
-    .work-hours-display span {
-        font-size: 1.15em;
-    }
-
-    .btn-submit,
-    .btn-admin,
-    .btn-link,
-    .btn-logout,
-    .btn-delete,
-    .btn-toggle {
-        padding: 12px 14px;
-        font-size: 0.85em;
-        min-height: 44px;
-        border-radius: 6px;
-    }
-
-    .btn-logout {
-        float: none;
-        width: 100%;
-        margin-bottom: 10px;
-    }
-
-    .form-inline {
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .form-inline input,
-    .form-inline button {
-        width: 100%;
-    }
-
-    .list-item {
-        padding: 10px;
-        margin-bottom: 8px;
-        flex-direction: column;
-    }
-
-    .list-item strong {
-        font-size: 0.85em;
-        margin-bottom: 4px;
-    }
-
-    .list-item small {
-        font-size: 0.75em;
-    }
-
-    .list-item-actions {
-        width: 100%;
-        margin-top: 8px;
-        gap: 5px;
-    }
-
-    .list-item-actions button {
-        font-size: 0.7em;
-        padding: 8px;
-        min-height: 36px;
-    }
-
-    .dashboard {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-
-    .dashboard-card {
-        padding: 14px;
-        border-radius: 8px;
-    }
-
-    .dashboard-card h3 {
-        font-size: 0.75em;
-    }
-
-    .dashboard-card .value {
-        font-size: 1.6em;
-    }
-
-    .modal {
-        padding: 10px;
-    }
-
-    .modal-content {
-        max-width: 95%;
-        padding: 16px;
-        border-radius: 10px;
-    }
-
-    .modal-content h2 {
-        font-size: 1em;
-        margin-bottom: 12px;
-    }
-
-    .modal-content input {
-        padding: 10px;
-        font-size: 16px;
-        min-height: 44px;
-        margin-bottom: 10px;
-    }
-
-    .modal-content button {
-        padding: 12px;
-        font-size: 0.85em;
-        min-height: 44px;
-        margin-bottom: 8px;
-    }
-
-    .admin-link {
-        padding: 8px;
-        margin-top: 15px;
-    }
-
-    .back-link {
-        margin-top: 15px;
-    }
-
-    .back-link button {
-        padding: 12px 14px;
-        font-size: 0.85em;
-        width: 100%;
-        min-height: 44px;
+        float: right;
     }
 }
 
 /* ============ RESPONSIVE - PC / DESKTOP (1200px+) ============ */
 @media (min-width: 1200px) {
+    .lead-container {
+        max-width: 700px;
+        padding: 30px;
+        margin: 0 auto;
+    }
+
+    .header-simple {
+        padding: 50px 40px;
+        margin-bottom: 35px;
+    }
+
+    .header-simple h1 {
+        font-size: 2.5em;
+    }
+
+    .form-container {
+        padding: 40px;
+    }
+
+    .form-container h2 {
+        font-size: 1.5em;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 14px 16px;
+        font-size: 1.05em;
+    }
+
     .container {
         padding: 30px;
     }
@@ -784,104 +792,22 @@ select:focus {
         font-size: 1.2em;
     }
 
-    .form-container,
     .admin-panel {
         padding: 40px;
     }
 
-    .form-container h2,
     .admin-panel h2 {
         font-size: 1.6em;
         margin-bottom: 25px;
     }
 
-    form {
-        gap: 18px;
-    }
-
-    label {
-        font-size: 1em;
-        margin-bottom: 8px;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    input[type="password"],
-    input[type="month"],
-    input[type="time"],
-    select {
-        padding: 14px 16px;
-        font-size: 1.05em;
-        border-radius: 10px;
-    }
-
-    .time-row {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        margin: 15px 0;
-    }
-
-    .time-field label {
-        font-size: 0.95em;
-        margin-bottom: 8px;
-    }
-
-    .work-hours-display {
-        padding: 18px;
-        margin: 18px 0;
-        font-size: 1.1em;
-    }
-
-    .work-hours-display span {
-        font-size: 1.5em;
-        margin-top: 8px;
-    }
-
-    .btn-submit,
-    .btn-admin,
-    .btn-link,
-    .btn-logout,
-    .btn-delete,
-    .btn-toggle {
-        padding: 16px 24px;
-        font-size: 1em;
-        border-radius: 10px;
-        cursor: pointer;
-    }
-
-    .btn-submit:hover,
-    .btn-admin:hover,
-    .btn-link:hover {
-        transform: translateY(-3px);
-    }
-
     .form-inline {
-        flex-direction: row;
         gap: 12px;
     }
 
     .form-inline input,
     .form-inline button {
-        flex: 1;
-    }
-
-    .list-item {
-        padding: 18px;
-        margin-bottom: 12px;
-        flex-direction: row;
-    }
-
-    .list-item strong {
-        font-size: 1em;
-    }
-
-    .list-item small {
-        font-size: 0.9em;
-    }
-
-    .list-item-actions {
-        flex-direction: row;
+        min-width: auto;
     }
 
     .dashboard {
@@ -901,14 +827,14 @@ select:focus {
         font-size: 2.8em;
     }
 
+    .list-item {
+        padding: 18px;
+        margin-bottom: 12px;
+    }
+
     .modal-content {
         max-width: 450px;
         padding: 40px;
-    }
-
-    .modal-content h2 {
-        font-size: 1.5em;
-        margin-bottom: 25px;
     }
 
     .salary-table {
