@@ -4,6 +4,11 @@
     box-sizing: border-box;
 }
 
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
@@ -13,18 +18,19 @@ body {
 }
 
 .container {
-    max-width: 1100px;
+    width: 100%;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 15px;
+    padding: 20px;
 }
 
 /* ============ HEADER ============ */
 .header {
     background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-    padding: 40px 25px;
-    border-radius: 16px;
+    padding: 35px 25px;
+    border-radius: 14px;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
     position: relative;
     overflow: hidden;
@@ -43,7 +49,7 @@ body {
 
 .header h1 {
     color: white;
-    font-size: 2.8em;
+    font-size: 2.5em;
     margin-bottom: 8px;
     font-weight: 900;
     letter-spacing: -1px;
@@ -54,43 +60,49 @@ body {
 
 .header p {
     color: rgba(255, 255, 255, 0.95);
-    font-size: 1.1em;
+    font-size: 1.05em;
     font-weight: 600;
     position: relative;
     z-index: 1;
     letter-spacing: 0.5px;
 }
 
-/* ============ FORMULÁR ============ */
-.form-container {
+/* ============ FORMULÁR - VŠEOBECNE ============ */
+.form-container,
+.admin-panel {
     background: white;
-    padding: 35px;
-    border-radius: 16px;
+    padding: 30px;
+    border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    margin-bottom: 25px;
     border-top: 4px solid #ff6b35;
 }
 
-.form-container h2 {
-    color: #0f172a;
+.form-container {
     margin-bottom: 25px;
-    font-size: 1.5em;
+}
+
+.form-container h2,
+.admin-panel h2 {
+    color: #0f172a;
+    margin-bottom: 20px;
+    font-size: 1.3em;
     font-weight: 700;
 }
 
 form {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 15px;
 }
 
 label {
     font-weight: 700;
-    color: #0f172a;
-    font-size: 0.95em;
+    color: #ff6b35;
+    font-size: 0.9em;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #ff6b35;
+    display: block;
+    margin-bottom: 5px;
 }
 
 input[type="text"],
@@ -100,14 +112,15 @@ input[type="password"],
 input[type="month"],
 input[type="time"],
 select {
-    padding: 16px;
+    width: 100%;
+    padding: 12px 14px;
     border: 2px solid #e2e8f0;
-    border-radius: 10px;
+    border-radius: 8px;
     font-size: 1em;
     background: #f8fafc;
     transition: all 0.3s ease;
-    width: 100%;
     font-weight: 500;
+    box-sizing: border-box;
 }
 
 input[type="text"]:focus,
@@ -120,15 +133,15 @@ select:focus {
     outline: none;
     border-color: #ff6b35;
     background: white;
-    box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.15);
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
 }
 
-/* ============ TIME ROW ============ */
+/* ============ TIME ROW - ČASY VEDĽA SEBA ============ */
 .time-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    margin: 15px 0;
+    margin: 10px 0;
 }
 
 .time-field {
@@ -137,7 +150,7 @@ select:focus {
 }
 
 .time-field label {
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     font-size: 0.85em;
 }
 
@@ -145,21 +158,17 @@ select:focus {
     width: 100%;
 }
 
+/* ============ ODPRACOVANÉ HODINY ============ */
 .work-hours-display {
     background: #f0f4f8;
     padding: 12px 16px;
     border-radius: 8px;
     text-align: center;
-    margin: 15px 0;
+    margin: 12px 0;
     border-left: 3px solid #ff6b35;
     color: #0f172a;
     font-size: 0.95em;
     font-weight: 600;
-}
-
-.work-hours-display strong {
-    font-size: 0.95em;
-    color: #0f172a;
 }
 
 .work-hours-display span {
@@ -175,18 +184,16 @@ select:focus {
 .btn-link,
 .btn-delete,
 .btn-toggle {
-    padding: 16px 24px;
+    padding: 14px 20px;
     border: none;
-    border-radius: 10px;
-    font-size: 1em;
+    border-radius: 8px;
+    font-size: 0.95em;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
-    touch-action: manipulation;
-    -webkit-user-select: none;
-    user-select: none;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    box-sizing: border-box;
 }
 
 .btn-submit {
@@ -196,14 +203,9 @@ select:focus {
     box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
 }
 
-.btn-submit:hover,
-.btn-submit:active {
+.btn-submit:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
-}
-
-.btn-submit:active {
-    transform: translateY(0);
 }
 
 .btn-admin {
@@ -211,13 +213,11 @@ select:focus {
     color: white;
     padding: 14px 28px;
     font-size: 0.95em;
-    width: auto;
     box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
 }
 
 .btn-admin:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
 }
 
 .btn-logout {
@@ -225,50 +225,42 @@ select:focus {
     color: white;
     float: right;
     margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
 }
 
 .btn-logout:hover {
     background: #c0392b;
-    transform: translateY(-2px);
 }
 
 .btn-link {
     background: #64748b;
     color: white;
     width: 100%;
-    box-shadow: 0 4px 15px rgba(100, 116, 139, 0.3);
 }
 
 .btn-link:hover {
     background: #475569;
-    transform: translateY(-2px);
 }
 
 .btn-delete {
     background: #e74c3c;
     color: white;
-    padding: 10px 14px;
+    padding: 10px 12px;
     font-size: 0.85em;
-    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2);
 }
 
 .btn-delete:hover {
     background: #c0392b;
-    transform: translateY(-1px);
 }
 
 .btn-toggle {
     background: #27ae60;
     color: white;
-    padding: 10px 14px;
+    padding: 10px 12px;
     font-size: 0.85em;
-    box-shadow: 0 2px 8px rgba(39, 174, 96, 0.2);
 }
 
 .btn-toggle:hover {
     background: #229954;
-    transform: translateY(-1px);
 }
 
 .btn-toggle.inactive {
@@ -279,10 +271,10 @@ select:focus {
 .admin-link {
     background: transparent;
     padding: 15px;
-    border-radius: 12px;
     text-align: center;
+    margin-top: 30px;
     box-shadow: none;
-    margin-top: 40px;
+    border: none;
 }
 
 .admin-link p {
@@ -293,40 +285,31 @@ select:focus {
 
 /* ============ ADMIN PANEL ============ */
 .admin-panel {
-    background: white;
-    padding: 35px;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    border-top: 4px solid #ff6b35;
+    margin-bottom: 25px;
 }
 
 .admin-panel h2 {
-    color: #0f172a;
-    margin-top: 35px;
-    margin-bottom: 25px;
+    margin-top: 30px;
     border-bottom: 3px solid #ff6b35;
-    padding-bottom: 12px;
-    font-size: 1.3em;
-    font-weight: 700;
+    padding-bottom: 10px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 .section {
-    margin-bottom: 45px;
+    margin-bottom: 35px;
 }
 
 .form-inline {
     display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: 10px;
+    margin-bottom: 15px;
     flex-wrap: wrap;
 }
 
 .form-inline input,
 .form-inline button {
     flex: 1;
-    min-width: 120px;
+    min-width: 150px;
 }
 
 .form-inline button {
@@ -336,47 +319,38 @@ select:focus {
 /* ============ LISTY ============ */
 .list {
     background: #f8fafc;
-    padding: 20px;
-    border-radius: 12px;
-    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
 }
 
 .list p {
     color: #94a3b8;
     text-align: center;
     padding: 20px;
-    font-weight: 500;
 }
 
 .list-item {
     background: white;
-    padding: 18px;
-    margin-bottom: 12px;
-    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-left: 4px solid #ff6b35;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
-}
-
-.list-item:hover {
-    box-shadow: 0 4px 16px rgba(255, 107, 53, 0.15);
-    transform: translateX(2px);
 }
 
 .list-item strong {
     color: #0f172a;
     display: block;
-    margin-bottom: 5px;
-    font-weight: 700;
+    margin-bottom: 4px;
 }
 
 .list-item small {
     color: #64748b;
     display: block;
-    font-size: 0.85em;
 }
 
 .list-item-actions {
@@ -392,36 +366,22 @@ select:focus {
 
 /* ============ HLÁŠKY ============ */
 .message {
-    padding: 16px;
-    border-radius: 10px;
-    margin-top: 15px;
+    padding: 14px;
+    border-radius: 8px;
+    margin-top: 12px;
     text-align: center;
-    font-weight: 700;
-    font-size: 0.95em;
-    animation: slideIn 0.3s ease;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    font-weight: 600;
+    font-size: 0.9em;
 }
 
 .message.success {
     background: #d5f4e6;
     color: #27ae60;
-    border-left: 4px solid #27ae60;
 }
 
 .message.error {
     background: #fadbd8;
     color: #c0392b;
-    border-left: 4px solid #c0392b;
 }
 
 /* ============ MODÁL ============ */
@@ -433,46 +393,32 @@ select:focus {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.6);
     justify-content: center;
     align-items: center;
-    padding: 15px;
-    backdrop-filter: blur(4px);
+    padding: 20px;
 }
 
 .modal-content {
     background-color: white;
-    padding: 40px;
-    border-radius: 16px;
+    padding: 30px;
+    border-radius: 12px;
     width: 100%;
-    max-width: 440px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     border-top: 4px solid #ff6b35;
-    animation: popIn 0.3s ease;
-}
-
-@keyframes popIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
 }
 
 .modal-content h2 {
     color: #0f172a;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     text-align: center;
     font-weight: 700;
-    font-size: 1.4em;
 }
 
 .modal-content input {
     width: 100%;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
 }
 
 .modal-content button {
@@ -481,51 +427,40 @@ select:focus {
 }
 
 .modal-content hr {
-    margin: 20px 0;
+    margin: 15px 0;
     border: none;
-    border-top: 2px solid #e2e8f0;
+    border-top: 1px solid #e2e8f0;
 }
 
 .modal-content p {
     text-align: center;
     color: #64748b;
-    font-size: 0.9em;
-    margin: 10px 0;
+    font-size: 0.85em;
 }
 
 /* ============ DASHBOARD ============ */
 .dashboard {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
 }
 
 .dashboard-card {
     background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
     color: white;
-    padding: 25px;
-    border-radius: 14px;
+    padding: 20px;
+    border-radius: 10px;
     text-align: center;
     box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3);
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-}
-
-.dashboard-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 36px rgba(255, 107, 53, 0.4);
 }
 
 .dashboard-card h3 {
-    font-size: 0.85em;
-    opacity: 0.95;
-    margin-bottom: 12px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-size: 0.9em;
+    margin-bottom: 10px;
 }
 
 .dashboard-card .value {
-    font-size: 2.8em;
+    font-size: 2.2em;
     font-weight: 900;
 }
 
@@ -533,23 +468,21 @@ select:focus {
 .salary-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    font-size: 0.95em;
+    margin-top: 15px;
+    font-size: 0.9em;
 }
 
 .salary-table th {
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    background: #ff6b35;
     color: white;
-    padding: 14px;
+    padding: 12px;
     text-align: left;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 .salary-table td {
-    padding: 14px;
-    border-bottom: 2px solid #e2e8f0;
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .salary-table tbody tr:hover {
@@ -559,42 +492,35 @@ select:focus {
 /* ============ SPÄŤ ODKAZ ============ */
 .back-link {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 30px;
 }
 
 .back-link button {
     background: white;
     color: #ff6b35;
     border: 2px solid #ff6b35;
-    padding: 14px 28px;
-    border-radius: 10px;
+    padding: 12px 24px;
+    border-radius: 8px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.2);
 }
 
 .back-link button:hover {
     background: #ff6b35;
     color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
 }
 
-/* ============ RESPONSIVE (MOBIL) ============ */
+/* ============ RESPONSIVE - TABLET (768px) ============ */
 @media (max-width: 768px) {
     .container {
-        padding: 12px;
+        padding: 15px;
     }
 
     .header h1 {
         font-size: 2em;
-    }
-
-    .header {
-        padding: 30px 15px;
     }
 
     .form-container,
@@ -604,12 +530,11 @@ select:focus {
 
     .form-inline {
         flex-direction: column;
-        gap: 10px;
     }
 
     .form-inline input,
     .form-inline button {
-        width: 100% !important;
+        width: 100%;
         min-width: auto;
     }
 
@@ -624,96 +549,58 @@ select:focus {
 
     .list-item-actions {
         width: 100%;
-        margin-top: 12px;
-        gap: 8px;
+        margin-top: 10px;
     }
 
-    .list-item-actions button {
-        flex: 1;
-        padding: 10px 8px;
-        font-size: 0.8em;
+    .dashboard {
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .btn-logout {
         float: none;
         width: 100%;
-        margin-bottom: 15px;
-    }
-
-    .dashboard {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-    }
-
-    .dashboard-card {
-        padding: 18px;
-    }
-
-    .dashboard-card .value {
-        font-size: 2em;
-    }
-
-    .modal-content {
-        padding: 25px;
-    }
-
-    .salary-table {
-        font-size: 0.85em;
-    }
-
-    .salary-table th,
-    .salary-table td {
-        padding: 10px;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    input[type="password"],
-    input[type="month"],
-    input[type="time"],
-    select {
-        font-size: 16px;
     }
 }
 
+/* ============ RESPONSIVE - MOBIL (480px) ============ */
 @media (max-width: 480px) {
     .container {
-        padding: 10px;
-    }
-
-    .header h1 {
-        font-size: 1.8em;
+        padding: 12px;
     }
 
     .header {
-        padding: 25px 15px;
-        margin-bottom: 20px;
+        padding: 20px 15px;
+        margin-bottom: 15px;
+    }
+
+    .header h1 {
+        font-size: 1.6em;
+        margin-bottom: 5px;
     }
 
     .header p {
-        font-size: 1em;
+        font-size: 0.9em;
     }
 
     .form-container,
     .admin-panel {
-        padding: 18px;
-        border-radius: 14px;
+        padding: 15px;
+        border-radius: 10px;
     }
 
     .form-container h2,
     .admin-panel h2 {
-        font-size: 1.2em;
-        margin-bottom: 18px;
+        font-size: 1.1em;
+        margin-bottom: 12px;
     }
 
     form {
-        gap: 14px;
+        gap: 10px;
     }
 
     label {
-        font-size: 0.9em;
-        margin-bottom: 6px;
+        font-size: 0.8em;
+        margin-bottom: 4px;
     }
 
     input[type="text"],
@@ -723,184 +610,25 @@ select:focus {
     input[type="month"],
     input[type="time"],
     select {
-        padding: 14px;
+        padding: 10px 12px;
         font-size: 16px;
-        border-radius: 10px;
+        border-radius: 6px;
     }
 
     .time-row {
         grid-template-columns: 1fr;
         gap: 10px;
-        margin: 10px 0;
-        width: 100%;
-    }
-
-    .time-field {
-        width: 100%;
+        margin: 8px 0;
     }
 
     .time-field label {
-        font-size: 0.8em;
-        margin-bottom: 4px;
-    }
-
-    .time-field input {
-        padding: 12px;
-        font-size: 16px;
-        width: 100%;
-    }
-
-    label {
-        font-size: 0.85em;
-    }
-
-    @media (max-width: 480px) {
-    .container {
-        padding: 8px;
-    }
-
-    .header h1 {
-        font-size: 1.5em;
-        margin-bottom: 3px;
-    }
-
-    .header {
-        padding: 15px 12px;
-        margin-bottom: 15px;
-    }
-
-    .header p {
-        font-size: 0.9em;
-    }
-
-    .form-container,
-    .admin-panel {
-        padding: 10px;
-        border-radius: 10px;
-    }
-
-    .time-row {
-        grid-template-columns: 1fr;
-        gap: 6px;
-        margin: 4px 0;
-        width: 100%;
-    }
-
-    .time-field {
-        width: 100%;
-        overflow: hidden;
-    }
-
-    .time-field label {
-        font-size: 0.7em;
-        margin-bottom: 2px;
-        display: block;
-    }
-
-    .time-field input {
-        padding: 6px 8px;
-        font-size: 13px;
-        width: 100%;
-        max-width: 100%;
-        border-radius: 6px;
-        min-height: auto;
-        height: auto;
-    }
-
-    label {
-        font-size: 0.7em;
-        margin-bottom: 2px;
-        display: block;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    input[type="password"],
-    input[type="month"],
-    input[type="time"],
-    select {
-        padding: 6px 8px;
-        font-size: 13px;
-        border-radius: 6px;
-        min-height: auto;
-        height: auto;
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-    }
-
-    .work-hours-display {
-        padding: 8px 10px;
-        margin: 6px 0;
-        font-size: 0.8em;
-        border-radius: 6px;
-    }
-
-    .work-hours-display span {
-        font-size: 1.1em;
-    }
-
-    form {
-        gap: 6px;
-    }
-
-    .form-container h2,
-    .admin-panel h2 {
-        font-size: 1em;
-        margin-bottom: 12px;
-    }
-
-    form {
-        gap: 8px;
-    }
-
-    label {
         font-size: 0.75em;
-        margin-bottom: 3px;
-        font-weight: 700;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    input[type="password"],
-    input[type="month"],
-    input[type="time"],
-    select {
-        padding: 8px 10px;
-        font-size: 14px;
-        border-radius: 6px;
-        min-height: 36px;
-    }
-
-    .time-row {
-        grid-template-columns: 1fr;
-        gap: 8px;
-        margin: 6px 0;
-        width: 100%;
-    }
-
-    .time-field {
-        width: 100%;
-    }
-
-    .time-field label {
-        font-size: 0.7em;
-        margin-bottom: 2px;
-    }
-
-    .time-field input {
-        padding: 8px 10px;
-        font-size: 14px;
-        width: 100%;
     }
 
     .work-hours-display {
         padding: 10px 12px;
-        margin: 8px 0;
-        font-size: 0.85em;
-        border-radius: 6px;
+        margin: 10px 0;
+        font-size: 0.9em;
     }
 
     .work-hours-display span {
@@ -909,300 +637,98 @@ select:focus {
 
     .btn-submit,
     .btn-admin,
-    .btn-link,
-    .btn-logout {
+    .btn-link {
         padding: 12px 16px;
-        font-size: 0.85em;
-        border-radius: 8px;
-        min-height: 42px;
-    }
-
-    .form-inline {
-        flex-direction: column;
-        gap: 8px;
-        margin-bottom: 12px;
-    }
-
-    .form-inline input,
-    .form-inline button {
-        width: 100%;
-        min-width: auto;
-        padding: 10px;
-        font-size: 14px;
-    }
-
-    .admin-link {
-        padding: 8px;
-        margin-top: 20px;
-    }
-
-    .list {
-        padding: 8px;
-        border-radius: 8px;
-    }
-
-    .list-item {
-        padding: 10px;
-        margin-bottom: 8px;
-        flex-direction: column;
-        align-items: flex-start;
-        border-radius: 8px;
-    }
-
-    .list-item strong {
         font-size: 0.9em;
-        margin-bottom: 4px;
-    }
-
-    .list-item small {
-        font-size: 0.75em;
-    }
-
-    .list-item-actions {
-        width: 100%;
-        margin-top: 8px;
-        gap: 6px;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .list-item-actions button {
-        padding: 8px;
-        font-size: 0.7em;
-        min-height: 36px;
-    }
-
-    .btn-logout {
-        float: none;
-        width: 100%;
-        margin-bottom: 12px;
-    }
-
-    .dashboard {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-
-    .dashboard-card {
-        padding: 14px;
-        border-radius: 10px;
-    }
-
-    .dashboard-card h3 {
-        font-size: 0.8em;
-        margin-bottom: 8px;
-    }
-
-    .dashboard-card .value {
-        font-size: 1.8em;
-    }
-
-    .modal {
-        padding: 10px;
-    }
-
-    .modal-content {
-        border-radius: 12px;
-        max-width: 95%;
-        padding: 16px;
-    }
-
-    .modal-content h2 {
-        font-size: 1.1em;
-        margin-bottom: 14px;
-    }
-
-    .modal-content input {
-        padding: 10px;
-        font-size: 14px;
-        margin-bottom: 10px;
-    }
-
-    .modal-content button {
-        padding: 12px;
-        font-size: 0.85em;
-        min-height: 42px;
-        margin-bottom: 8px;
-    }
-
-    .salary-table {
-        font-size: 0.75em;
-    }
-
-    .salary-table th,
-    .salary-table td {
-        padding: 8px;
-    }
-
-    .back-link {
-        margin-top: 20px;
-    }
-
-    .back-link button {
-        padding: 12px 16px;
-        font-size: 0.85em;
-        width: 100%;
-        min-height: 42px;
-    }
-
-    .section {
-        margin-bottom: 25px;
-    }
-}
-
-    .work-hours-display {
-        padding: 14px 16px;
-        margin: 12px 0;
-        font-size: 1em;
-    }
-
-    .work-hours-display span {
-        font-size: 1.4em;
-    }
-
-    .btn-submit,
-    .btn-admin,
-    .btn-link,
-    .btn-logout {
-        padding: 16px 20px;
-        font-size: 0.95em;
-        border-radius: 10px;
-        min-height: 48px;
-    }
-
-    .btn-submit:active {
-        transform: scale(0.98);
-    }
-
-    .form-inline {
-        flex-direction: column;
-        gap: 10px;
-        margin-bottom: 15px;
-    }
-
-    .form-inline input,
-    .form-inline button {
-        width: 100%;
-        min-width: auto;
-        padding: 14px;
-        font-size: 16px;
-    }
-
-    .admin-link {
-        padding: 12px;
-        margin-top: 30px;
-    }
-
-    .list {
-        padding: 12px;
-        border-radius: 10px;
-    }
-
-    .list-item {
-        padding: 14px;
-        margin-bottom: 10px;
-        flex-direction: column;
-        align-items: flex-start;
-        border-radius: 10px;
-    }
-
-    .list-item strong {
-        font-size: 1em;
-        margin-bottom: 6px;
-    }
-
-    .list-item small {
-        font-size: 0.85em;
-    }
-
-    .list-item-actions {
-        width: 100%;
-        margin-top: 12px;
-        gap: 8px;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .list-item-actions button {
-        padding: 10px;
-        font-size: 0.8em;
         min-height: 44px;
     }
 
     .btn-logout {
         float: none;
         width: 100%;
-        margin-bottom: 15px;
+        padding: 12px 16px;
+    }
+
+    .form-inline {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-inline input,
+    .form-inline button {
+        width: 100%;
+    }
+
+    .list-item {
+        padding: 12px;
+        margin-bottom: 8px;
+    }
+
+    .list-item strong {
+        font-size: 0.9em;
+    }
+
+    .list-item small {
+        font-size: 0.8em;
+    }
+
+    .list-item-actions {
+        width: 100%;
+        margin-top: 10px;
+        gap: 6px;
+    }
+
+    .list-item-actions button {
+        font-size: 0.75em;
+        padding: 8px 10px;
+        min-height: 36px;
     }
 
     .dashboard {
         grid-template-columns: 1fr;
-        gap: 14px;
+        gap: 12px;
     }
 
     .dashboard-card {
-        padding: 20px;
-        border-radius: 12px;
+        padding: 16px;
     }
 
     .dashboard-card h3 {
-        font-size: 0.9em;
-        margin-bottom: 10px;
+        font-size: 0.8em;
     }
 
     .dashboard-card .value {
-        font-size: 2.2em;
-    }
-
-    .modal {
-        padding: 15px;
+        font-size: 1.8em;
     }
 
     .modal-content {
-        border-radius: 14px;
         max-width: 95%;
-        padding: 24px;
+        padding: 20px;
     }
 
     .modal-content h2 {
-        font-size: 1.3em;
-        margin-bottom: 20px;
-    }
-
-    .modal-content input {
-        padding: 14px;
-        font-size: 16px;
-        margin-bottom: 12px;
-    }
-
-    .modal-content button {
-        padding: 14px;
-        font-size: 0.95em;
-        min-height: 48px;
-        margin-bottom: 10px;
+        font-size: 1.1em;
     }
 
     .salary-table {
-        font-size: 0.8em;
+        font-size: 0.75em;
     }
 
     .salary-table th,
     .salary-table td {
-        padding: 10px;
+        padding: 8px;
     }
 
     .back-link {
-        margin-top: 30px;
+        margin-top: 20px;
     }
 
     .back-link button {
-        padding: 14px 20px;
-        font-size: 0.95em;
         width: 100%;
-        min-height: 48px;
+        padding: 12px 16px;
     }
 
-    .section {
-        margin-bottom: 30px;
+    .admin-link {
+        margin-top: 20px;
     }
 }
