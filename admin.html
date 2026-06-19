@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CvikniSi - Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CvikniSi</h1>
+            <p>Admin Panel</p>
+        </div>
+
+        <!-- Login Modal -->
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <h2>Admin Prihlásenie</h2>
+                <input type="password" id="adminPassword" placeholder="Zadaj admin heslo">
+                <button onclick="loginAdmin()" class="btn-submit">Prihlásiť sa</button>
+                <div id="loginMessage" class="message"></div>
+            </div>
+        </div>
+
+        <!-- Admin Panel (skryté, kým sa neprihlásiš) -->
+        <div id="adminPanel" class="admin-panel" style="display: none;">
+            <button onclick="logoutAdmin()" class="btn-logout">Odhlásiť sa</button>
+
+            <!-- Zamestnanci -->
+            <div class="section">
+                <h2>👥 Zamestnanci</h2>
+                <div class="form-inline">
+                    <input type="text" id="newEmployeeName" placeholder="Meno zamestnanca">
+                    <input type="number" id="newEmployeeRate" placeholder="Hodinová mzda" step="0.01" min="0">
+                    <button onclick="addEmployee()" class="btn-submit">+ Pridaj zamestnanca</button>
+                </div>
+                <div id="employeesList" class="list"></div>
+            </div>
+
+            <!-- Projekty -->
+            <div class="section">
+                <h2>📦 Projekty</h2>
+                <div class="form-inline">
+                    <input type="text" id="newProjectName" placeholder="Názov projektu">
+                    <button onclick="addProject()" class="btn-submit">+ Pridaj projekt</button>
+                </div>
+                <div id="projectsList" class="list"></div>
+            </div>
+
+            <!-- Dochádzka -->
+            <div class="section">
+                <h2>📋 Dochádzka</h2>
+                <div class="form-inline">
+                    <input type="date" id="filterDate" value="">
+                    <button onclick="filterAttendance()" class="btn-submit">Filtrovať</button>
+                </div>
+                <div id="attendanceList" class="list"></div>
+            </div>
+
+            <!-- Dashboard -->
+            <div class="section">
+                <h2>📊 Dashboard - Prehľad</h2>
+                <div id="dashboard" class="dashboard"></div>
+            </div>
+
+            <!-- Výplaty -->
+            <div class="section">
+                <h2>💰 Výplaty za mesiac</h2>
+                <div class="form-inline">
+                    <input type="month" id="salaryMonth" value="">
+                    <button onclick="calculateSalaries()" class="btn-submit">Vypočítaj výplaty</button>
+                </div>
+                <div id="salariesList" class="list"></div>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <button onclick="backToLead()" class="btn-link">← Späť na Vedúci formulár</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Inicializácia admin panela
+        initializeAdmin();
+    </script>
+</body>
+</html>

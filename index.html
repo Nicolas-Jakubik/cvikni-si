@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CvikniSi - Vedúci</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CvikniSi</h1>
+            <p>Evidovanie dochádzky</p>
+        </div>
+
+        <div class="form-container">
+            <h2>Zadaj odpracované hodiny</h2>
+            
+            <form id="attendanceForm">
+                <label>Meno:</label>
+                <select id="employeeName" required>
+                    <option value="">-- Vyber meno --</option>
+                </select>
+
+                <label>Projekt:</label>
+                <select id="projectName" required>
+                    <option value="">-- Vyber projekt --</option>
+                </select>
+
+                <label>Počet hodín:</label>
+                <input type="number" id="hours" min="0" max="24" step="0.5" required placeholder="napr. 8">
+
+                <label>Dátum:</label>
+                <input type="date" id="workDate" required>
+
+                <button type="submit" class="btn-submit">Ulož hodiny</button>
+            </form>
+
+            <div id="message" class="message"></div>
+        </div>
+
+        <div class="admin-link">
+            <p>Esi administrátor?</p>
+            <button class="btn-admin" onclick="goToAdmin()">Prejsť do Admin Panelu</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Inicializácia vedúceho formulára
+        loadEmployeesForLead();
+        loadProjectsForLead();
+
+        document.getElementById('attendanceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitAttendance();
+        });
+    </script>
+</body>
+</html>
