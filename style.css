@@ -642,6 +642,122 @@ body:not(.lead-page) {
     transform: translateY(-2px);
 }
 
+/* ============ ULTRA COMPACT MOBILE (max 600px) ============ */
+@media (max-width: 600px) {
+    .header-simple {
+        padding: 12px;
+        margin-bottom: 0;
+        border-radius: 0;
+    }
+
+    .header-simple h1 {
+        font-size: 1.4em;
+        margin-bottom: 0;
+    }
+
+    .form-container {
+        margin: 0;
+        padding: 10px;
+        border-radius: 0;
+        border-top: 4px solid #ff6b35;
+        background: white;
+    }
+
+    .form-container h2 {
+        font-size: 1em;
+        margin-bottom: 12px;
+        margin-top: 0;
+    }
+
+    .form-group {
+        margin-bottom: 8px;
+    }
+
+    .form-group label {
+        font-size: 0.7em;
+        margin-bottom: 2px;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 8px 10px;
+        font-size: 14px;
+        min-height: 40px;
+        border-radius: 4px;
+    }
+
+    .hours-box {
+        padding: 8px 10px;
+        margin: 8px 0;
+        font-size: 1em;
+        border-radius: 4px;
+    }
+
+    .hours-box span {
+        font-size: 1.2em;
+    }
+
+    .btn-submit {
+        padding: 10px;
+        font-size: 0.9em;
+        min-height: 40px;
+        border-radius: 4px;
+        margin-top: 4px;
+    }
+
+    .message {
+        margin-top: 8px;
+        padding: 8px 10px;
+        font-size: 0.8em;
+        border-radius: 4px;
+    }
+
+    .admin-btn-container {
+        padding: 10px;
+        background: white;
+        border-top: 1px solid #e0e0e0;
+    }
+
+    .btn-admin-small {
+        padding: 8px 16px;
+        font-size: 0.8em;
+        min-height: 36px;
+    }
+}
+
+@media (max-width: 450px) {
+    .header-simple h1 {
+        font-size: 1.2em;
+    }
+
+    .form-container h2 {
+        font-size: 0.95em;
+    }
+
+    .form-group label {
+        font-size: 0.65em;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 8px 8px;
+        font-size: 13px;
+        border-radius: 4px;
+    }
+
+    .hours-box {
+        padding: 8px;
+        margin: 6px 0;
+        font-size: 0.95em;
+    }
+
+    .btn-submit {
+        padding: 10px;
+        font-size: 0.85em;
+        margin: 4px 0 0 0;
+    }
+}
+
 /* ============ RESPONSIVE - TABLET (768px) ============ */
 @media (min-width: 768px) {
     .lead-page {
