@@ -154,16 +154,59 @@ body {
     transform: translateY(-2px);
 }
 
+.time-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 0;
+}
+
+.time-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+}
+
+.time-field label {
+    font-size: 0.65em;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.time-field input {
+    padding: 8px 8px;
+    font-size: 13px;
+    border: 2px solid #e0e7ff;
+    border-radius: 6px;
+    background: #f8fafc;
+    width: 100%;
+    min-height: 36px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Poppins', sans-serif;
+}
+
+.time-field input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+    transform: translateY(-1px);
+}
+
 .hours-box {
     background: transparent;
     color: #667eea;
-    padding: 6px 8px;
+    padding: 6px 0;
     text-align: center;
-    border-radius: 6px;
+    border-radius: 0;
     margin: 6px 0;
-    font-size: 0.8em;
+    font-size: 0.75em;
     font-weight: 600;
-    border: 1px solid #e0e7ff;
+    border: none;
     box-shadow: none;
     animation: fadeInUp 0.5s ease;
     letter-spacing: 0.5px;
@@ -172,7 +215,7 @@ body {
 
 .hours-box span {
     color: #667eea;
-    font-size: 1.1em;
+    font-size: 1.2em;
     font-weight: 900;
 }
 
@@ -735,32 +778,6 @@ body:not(.lead-page) {
     box-shadow: 0 10px 24px rgba(100, 116, 139, 0.4);
 }
 
-/* ============ TIME ROW ============ */
-.time-row {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-    margin: 0;
-}
-
-.time-field {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 0;
-}
-
-.time-field label {
-    font-size: 0.7em;
-    margin-bottom: 2px;
-}
-
-.time-field input {
-    padding: 8px 10px;
-    font-size: 14px;
-    min-height: 40px;
-    border-radius: 4px;
-}
-
 /* ============ RESPONSIVE - TABLET (768px) ============ */
 @media (min-width: 768px) {
     .lead-page {
@@ -810,10 +827,29 @@ body:not(.lead-page) {
         font-size: 1em;
     }
 
+    .time-row {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+
+    .time-field label {
+        font-size: 0.85em;
+    }
+
+    .time-field input {
+        padding: 10px 12px;
+        font-size: 15px;
+        min-height: 38px;
+    }
+
     .hours-box {
-        padding: 16px;
-        margin: 16px 0;
-        font-size: 1.1em;
+        padding: 8px 0;
+        margin: 8px 0;
+        font-size: 0.85em;
+    }
+
+    .hours-box span {
+        font-size: 1.3em;
     }
 
     .admin-btn-container {
@@ -840,11 +876,6 @@ body:not(.lead-page) {
     .form-inline button {
         flex: 1;
         min-width: auto;
-    }
-
-    .time-row {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
     }
 
     .list-item {
@@ -897,6 +928,30 @@ body:not(.lead-page) {
     .form-group select {
         padding: 14px 16px;
         font-size: 1.05em;
+    }
+
+    .time-row {
+        gap: 16px;
+    }
+
+    .time-field label {
+        font-size: 0.95em;
+    }
+
+    .time-field input {
+        padding: 12px 14px;
+        font-size: 1em;
+        min-height: 44px;
+    }
+
+    .hours-box {
+        padding: 10px 0;
+        margin: 12px 0;
+        font-size: 0.95em;
+    }
+
+    .hours-box span {
+        font-size: 1.4em;
     }
 
     .container {
