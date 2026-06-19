@@ -685,6 +685,30 @@ body:not(.lead-page) {
         min-height: 40px;
         border-radius: 4px;
     }
+    .time-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin: 0;
+    }
+
+    .time-field {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 0;
+    }
+
+    .time-field label {
+        font-size: 0.7em;
+        margin-bottom: 2px;
+    }
+
+    .time-field input {
+        padding: 8px 10px;
+        font-size: 14px;
+        min-height: 40px;
+        border-radius: 4px;
+    }
 
     .hours-box {
         padding: 8px 10px;
