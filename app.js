@@ -65,16 +65,42 @@ async function loadProjectsForLead() {
     }
 }
 
+function calculateWorkHours() {
+    const timeFrom = document.getElementById('timeFrom').value;
+    const timeTo = document.getElementById('timeTo').value;
+    const breakMinutes = parseFloat(document.getElementById('breakMinutes').value) || 0;
+
+    if (!timeFrom || !timeTo) return;
+
+    const [fromHours, fromMins] = timeFrom.split(':').map(Number);
+    const [toHours, toMins] = timeTo.split(':').map(Number);
+
+    const fromTotalMins = fromHours * 60 + fromMins;
+    const toTotalMins = toHours * 60 + toMins;
+
+    const workMins = toTotalMins - fromTotalMins - breakMinutes;
+    const workHours = workMins / 60;
+
+    document.getElementById('hoursCalculated').textContent = Math.max(0, workHours.toFixed(2));
+}
+
 async function submitAttendance() {
     const employeeId = document.getElementById('employeeName').value;
     const projectId = document.getElementById('projectName').value;
-    const hours = parseFloat(document.getElementById('hours').value);
     const workDate = document.getElementById('workDate').value;
     const messageDiv = document.getElementById('message');
 
-    if (!employeeId || !projectId || !hours || !workDate) {
+    const calculatedHours = parseFloat(document.getElementById('hoursCalculated').textContent);
+
+    if (!employeeId || !projectId || !workDate) {
         messageDiv.className = 'message error';
         messageDiv.textContent = '❌ Vyplň všetky polia!';
+        return;
+    }
+
+    if (calculatedHours <= 0) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = '❌ Neplatný čas!';
         return;
     }
 
@@ -82,7 +108,7 @@ async function submitAttendance() {
         const { error } = await supabaseClient.from('attendance').insert({
             employee_id: employeeId,
             project_id: projectId,
-            hours: hours,
+            hours: calculatedHours,
             date: workDate
         });
 
@@ -92,6 +118,8 @@ async function submitAttendance() {
         messageDiv.textContent = '✅ Hodiny boli uložené!';
         
         document.getElementById('attendanceForm').reset();
+        setTodayDate();
+        calculateWorkHours();
         setTimeout(() => {
             messageDiv.textContent = '';
         }, 3000);
@@ -535,6 +563,12 @@ async function calculateSalaries() {
     }
 }
 
+function setTodayDate() {
+    const today = new Date().toISOString().split('T')[0];
+    const dateInput = document.getElementById('workDate');
+    if (dateInput) dateInput.value = today;
+}
+
 // ============ INICIALIZÁCIA ============
 document.addEventListener('DOMContentLoaded', async () => {
     await initSupabase();
@@ -547,6 +581,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     else if (document.getElementById('attendanceForm')) {
         loadEmployeesForLead();
         loadProjectsForLead();
+        
+        // Nastav dnes ako predvolený dátum
+        setTodayDate();
+        
+        // Inicializuj výpočet hodín
+        calculateWorkHours();
+        
+        // Počítaj hodiny pri zmene času
+        document.getElementById('timeFrom').addEventListener('change', calculateWorkHours);
+        document.getElementById('timeTo').addEventListener('change', calculateWorkHours);
+        document.getElementById('breakMinutes').addEventListener('input', calculateWorkHours);
         
         document.getElementById('attendanceForm').addEventListener('submit', async (e) => {
             e.preventDefault();
