@@ -136,7 +136,7 @@ select:focus {
     box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
 }
 
-/* ============ TIME ROW - ČASY VEDĽA SEBA ============ */
+/* ============ TIME ROW - ČASY VEDĽA SEBE ============ */
 .time-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -562,45 +562,51 @@ select:focus {
     }
 }
 
-/* ============ RESPONSIVE - MOBIL (480px) ============ */
-@media (max-width: 480px) {
+/* ============ RESPONSIVE - iPHONE (375px - 428px) ============ */
+@media (max-width: 390px) {
     .container {
-        padding: 12px;
+        padding: 10px;
+    }
+
+    body {
+        padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     }
 
     .header {
-        padding: 20px 15px;
-        margin-bottom: 15px;
+        padding: 18px 12px;
+        margin-bottom: 12px;
+        border-radius: 10px;
     }
 
     .header h1 {
-        font-size: 1.6em;
-        margin-bottom: 5px;
+        font-size: 1.4em;
+        margin-bottom: 4px;
     }
 
     .header p {
-        font-size: 0.9em;
+        font-size: 0.85em;
     }
 
     .form-container,
     .admin-panel {
-        padding: 15px;
-        border-radius: 10px;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 15px;
     }
 
     .form-container h2,
     .admin-panel h2 {
-        font-size: 1.1em;
-        margin-bottom: 12px;
+        font-size: 1em;
+        margin-bottom: 10px;
     }
 
     form {
-        gap: 10px;
+        gap: 8px;
     }
 
     label {
-        font-size: 0.8em;
-        margin-bottom: 4px;
+        font-size: 0.75em;
+        margin-bottom: 3px;
     }
 
     input[type="text"],
@@ -610,43 +616,50 @@ select:focus {
     input[type="month"],
     input[type="time"],
     select {
-        padding: 10px 12px;
+        padding: 10px 10px;
         font-size: 16px;
+        min-height: 44px;
         border-radius: 6px;
     }
 
     .time-row {
         grid-template-columns: 1fr;
-        gap: 10px;
-        margin: 8px 0;
+        gap: 8px;
+        margin: 6px 0;
     }
 
     .time-field label {
-        font-size: 0.75em;
+        font-size: 0.7em;
+        margin-bottom: 2px;
     }
 
     .work-hours-display {
-        padding: 10px 12px;
-        margin: 10px 0;
-        font-size: 0.9em;
+        padding: 10px;
+        margin: 8px 0;
+        font-size: 0.85em;
+        border-radius: 6px;
     }
 
     .work-hours-display span {
-        font-size: 1.2em;
+        font-size: 1.15em;
     }
 
     .btn-submit,
     .btn-admin,
-    .btn-link {
-        padding: 12px 16px;
-        font-size: 0.9em;
+    .btn-link,
+    .btn-logout,
+    .btn-delete,
+    .btn-toggle {
+        padding: 12px 14px;
+        font-size: 0.85em;
         min-height: 44px;
+        border-radius: 6px;
     }
 
     .btn-logout {
         float: none;
         width: 100%;
-        padding: 12px 16px;
+        margin-bottom: 10px;
     }
 
     .form-inline {
@@ -660,75 +673,252 @@ select:focus {
     }
 
     .list-item {
-        padding: 12px;
+        padding: 10px;
         margin-bottom: 8px;
+        flex-direction: column;
     }
 
     .list-item strong {
-        font-size: 0.9em;
+        font-size: 0.85em;
+        margin-bottom: 4px;
     }
 
     .list-item small {
-        font-size: 0.8em;
+        font-size: 0.75em;
     }
 
     .list-item-actions {
         width: 100%;
-        margin-top: 10px;
-        gap: 6px;
+        margin-top: 8px;
+        gap: 5px;
     }
 
     .list-item-actions button {
-        font-size: 0.75em;
-        padding: 8px 10px;
+        font-size: 0.7em;
+        padding: 8px;
         min-height: 36px;
     }
 
     .dashboard {
         grid-template-columns: 1fr;
-        gap: 12px;
+        gap: 10px;
     }
 
     .dashboard-card {
-        padding: 16px;
+        padding: 14px;
+        border-radius: 8px;
     }
 
     .dashboard-card h3 {
-        font-size: 0.8em;
+        font-size: 0.75em;
     }
 
     .dashboard-card .value {
-        font-size: 1.8em;
+        font-size: 1.6em;
+    }
+
+    .modal {
+        padding: 10px;
     }
 
     .modal-content {
         max-width: 95%;
-        padding: 20px;
+        padding: 16px;
+        border-radius: 10px;
     }
 
     .modal-content h2 {
+        font-size: 1em;
+        margin-bottom: 12px;
+    }
+
+    .modal-content input {
+        padding: 10px;
+        font-size: 16px;
+        min-height: 44px;
+        margin-bottom: 10px;
+    }
+
+    .modal-content button {
+        padding: 12px;
+        font-size: 0.85em;
+        min-height: 44px;
+        margin-bottom: 8px;
+    }
+
+    .admin-link {
+        padding: 8px;
+        margin-top: 15px;
+    }
+
+    .back-link {
+        margin-top: 15px;
+    }
+
+    .back-link button {
+        padding: 12px 14px;
+        font-size: 0.85em;
+        width: 100%;
+        min-height: 44px;
+    }
+}
+
+/* ============ RESPONSIVE - PC / DESKTOP (1200px+) ============ */
+@media (min-width: 1200px) {
+    .container {
+        padding: 30px;
+    }
+
+    .header {
+        padding: 50px 40px;
+        margin-bottom: 35px;
+    }
+
+    .header h1 {
+        font-size: 3.2em;
+    }
+
+    .header p {
+        font-size: 1.2em;
+    }
+
+    .form-container,
+    .admin-panel {
+        padding: 40px;
+    }
+
+    .form-container h2,
+    .admin-panel h2 {
+        font-size: 1.6em;
+        margin-bottom: 25px;
+    }
+
+    form {
+        gap: 18px;
+    }
+
+    label {
+        font-size: 1em;
+        margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="password"],
+    input[type="month"],
+    input[type="time"],
+    select {
+        padding: 14px 16px;
+        font-size: 1.05em;
+        border-radius: 10px;
+    }
+
+    .time-row {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin: 15px 0;
+    }
+
+    .time-field label {
+        font-size: 0.95em;
+        margin-bottom: 8px;
+    }
+
+    .work-hours-display {
+        padding: 18px;
+        margin: 18px 0;
         font-size: 1.1em;
     }
 
+    .work-hours-display span {
+        font-size: 1.5em;
+        margin-top: 8px;
+    }
+
+    .btn-submit,
+    .btn-admin,
+    .btn-link,
+    .btn-logout,
+    .btn-delete,
+    .btn-toggle {
+        padding: 16px 24px;
+        font-size: 1em;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    .btn-submit:hover,
+    .btn-admin:hover,
+    .btn-link:hover {
+        transform: translateY(-3px);
+    }
+
+    .form-inline {
+        flex-direction: row;
+        gap: 12px;
+    }
+
+    .form-inline input,
+    .form-inline button {
+        flex: 1;
+    }
+
+    .list-item {
+        padding: 18px;
+        margin-bottom: 12px;
+        flex-direction: row;
+    }
+
+    .list-item strong {
+        font-size: 1em;
+    }
+
+    .list-item small {
+        font-size: 0.9em;
+    }
+
+    .list-item-actions {
+        flex-direction: row;
+    }
+
+    .dashboard {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+
+    .dashboard-card {
+        padding: 28px 20px;
+    }
+
+    .dashboard-card h3 {
+        font-size: 1em;
+    }
+
+    .dashboard-card .value {
+        font-size: 2.8em;
+    }
+
+    .modal-content {
+        max-width: 450px;
+        padding: 40px;
+    }
+
+    .modal-content h2 {
+        font-size: 1.5em;
+        margin-bottom: 25px;
+    }
+
     .salary-table {
-        font-size: 0.75em;
+        font-size: 1em;
     }
 
     .salary-table th,
     .salary-table td {
-        padding: 8px;
+        padding: 14px;
     }
 
-    .back-link {
-        margin-top: 20px;
-    }
-
-    .back-link button {
-        width: 100%;
-        padding: 12px 16px;
-    }
-
-    .admin-link {
-        margin-top: 20px;
+    .section {
+        margin-bottom: 45px;
     }
 }
