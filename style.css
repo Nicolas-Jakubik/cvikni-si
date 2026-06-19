@@ -775,8 +775,74 @@ select:focus {
 
     .form-container,
     .admin-panel {
-        padding: 14px;
-        border-radius: 12px;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .time-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+        margin: 4px 0;
+        width: 100%;
+    }
+
+    .time-field {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .time-field label {
+        font-size: 0.7em;
+        margin-bottom: 2px;
+        display: block;
+    }
+
+    .time-field input {
+        padding: 6px 8px;
+        font-size: 13px;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 6px;
+        min-height: auto;
+        height: auto;
+    }
+
+    label {
+        font-size: 0.7em;
+        margin-bottom: 2px;
+        display: block;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="password"],
+    input[type="month"],
+    input[type="time"],
+    select {
+        padding: 6px 8px;
+        font-size: 13px;
+        border-radius: 6px;
+        min-height: auto;
+        height: auto;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .work-hours-display {
+        padding: 8px 10px;
+        margin: 6px 0;
+        font-size: 0.8em;
+        border-radius: 6px;
+    }
+
+    .work-hours-display span {
+        font-size: 1.1em;
+    }
+
+    form {
+        gap: 6px;
     }
 
     .form-container h2,
