@@ -162,6 +162,10 @@ function switchSection(sectionId) {
     } else if (sectionId === 'projects') {
         loadProjects();
     } else if (sectionId === 'attendance') {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        document.getElementById('attendanceMonth').value = `${year}-${month}`;
         loadAttendance();
     } else if (sectionId === 'salaries') {
         const today = new Date();
@@ -269,7 +273,6 @@ async function addEmployee() {
 
     try {
         if (editingEmployeeId) {
-            // ÚPRAVA
             const { error } = await supabaseClient
                 .from('employees')
                 .update({ name, hourly_rate: rate })
@@ -278,7 +281,6 @@ async function addEmployee() {
             if (error) throw error;
             alert('✅ Zamestnanec bol upravený!');
         } else {
-            // NOVÝ
             const { error } = await supabaseClient.from('employees').insert({
                 name: name,
                 hourly_rate: rate
@@ -441,20 +443,23 @@ async function loadProjects() {
 // ============ DOCHÁDZKA ============
 
 async function loadAttendance() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const monthStart = `${year}-${month}-01`;
+    const monthInput = document.getElementById('attendanceMonth').value;
     
-    const lastDay = new Date(year, today.getMonth() + 1, 0).getDate();
+    if (!monthInput) {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        document.getElementById('attendanceMonth').value = `${year}-${month}`;
+        return;
+    }
+
+    const [year, month] = monthInput.split('-');
+    const monthStart = `${year}-${month}-01`;
+    const lastDay = new Date(year, parseInt(month), 0).getDate();
     const monthEnd = `${year}-${month}-${String(lastDay).padStart(2, '0')}`;
 
     const monthNames = ['Január', 'Február', 'Marec', 'Apríl', 'Máj', 'Jún', 
                        'Júl', 'August', 'September', 'Október', 'November', 'December'];
-    const monthTitle = document.getElementById('attendanceMonth');
-    if (monthTitle) {
-        monthTitle.textContent = `${monthNames[today.getMonth()]} ${year}`;
-    }
 
     try {
         const { data, error } = await supabaseClient
@@ -480,7 +485,7 @@ async function loadAttendance() {
         list.innerHTML = '';
 
         if (data.length === 0) {
-            list.innerHTML = '<div class="empty-state">Žiadne záznamy v tomto mesiaci.</div>';
+            list.innerHTML = `<div class="empty-state">Žiadne záznamy v ${monthNames[parseInt(month) - 1]} ${year}.</div>`;
             return;
         }
 
@@ -586,7 +591,10 @@ async function calculateSalaries() {
     const monthInput = document.getElementById('salaryMonth').value;
     
     if (!monthInput) {
-        alert('Vyber mesiac!');
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        document.getElementById('salaryMonth').value = `${year}-${month}`;
         return;
     }
 
@@ -609,7 +617,10 @@ async function calculateSalaries() {
             return;
         }
 
-        let html = `<div class="salary-header"><h3>Výplaty za ${monthInput}</h3></div>`;
+        const monthNames = ['Január', 'Február', 'Marec', 'Apríl', 'Máj', 'Jún', 
+                           'Júl', 'August', 'September', 'Október', 'November', 'December'];
+
+        let html = `<div class="salary-header"><h3>Výplaty za ${monthNames[parseInt(month) - 1]} ${year}</h3></div>`;
         html += `<div class="salary-table-wrapper"><table class="salary-table">
                     <thead>
                         <tr>

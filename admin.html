@@ -112,7 +112,10 @@
                 <!-- DOCHÁDZKA -->
                 <section id="attendance" class="section">
                     <div class="section-header">
-                        <h3>Správa dochádzky - <span id="attendanceMonth"></span></h3>
+                        <h3>Správa dochádzky</h3>
+                        <div class="filter-row">
+                            <input type="month" id="attendanceMonth" class="form-input" onchange="loadAttendance()">
+                        </div>
                     </div>
 
                     <div id="attendanceList" class="list-container"></div>
@@ -122,10 +125,7 @@
                 <section id="salaries" class="section">
                     <div class="section-header">
                         <h3>Výplaty za mesiac</h3>
-                        <div class="filter-row">
-                            <input type="month" id="salaryMonth" class="form-input">
-                            <button onclick="calculateSalaries()" class="btn-filter">Vypočítaj</button>
-                        </div>
+                        <input type="month" id="salaryMonth" class="form-input" onchange="calculateSalaries()">
                     </div>
 
                     <div id="salariesList" class="salaries-container"></div>
