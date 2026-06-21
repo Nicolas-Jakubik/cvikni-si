@@ -4,6 +4,7 @@ const SUPABASE_KEY = 'sb_publishable_ISftud-eccL_0Dw1m1VR0g_O9xgKHR_';
 const ADMIN_PASSWORD = 'admin123';
 
 let supabaseClient = null;
+let editingEmployeeId = null;
 
 async function initSupabase() {
     if (supabaseClient) return;
@@ -172,7 +173,10 @@ function switchSection(sectionId) {
 }
 
 function openAddEmployee() {
+    editingEmployeeId = null;
     document.getElementById('addEmployeeForm').style.display = 'flex';
+    document.getElementById('newEmployeeName').value = '';
+    document.getElementById('newEmployeeRate').value = '';
     document.getElementById('newEmployeeName').focus();
 }
 
@@ -180,6 +184,15 @@ function closeAddEmployee() {
     document.getElementById('addEmployeeForm').style.display = 'none';
     document.getElementById('newEmployeeName').value = '';
     document.getElementById('newEmployeeRate').value = '';
+    editingEmployeeId = null;
+}
+
+function openEditEmployee(empId, name, rate) {
+    editingEmployeeId = empId;
+    document.getElementById('newEmployeeName').value = name;
+    document.getElementById('newEmployeeRate').value = rate;
+    document.getElementById('addEmployeeForm').style.display = 'flex';
+    document.getElementById('newEmployeeName').focus();
 }
 
 function openAddProject() {
@@ -255,12 +268,25 @@ async function addEmployee() {
     }
 
     try {
-        const { error } = await supabaseClient.from('employees').insert({
-            name: name,
-            hourly_rate: rate
-        });
+        if (editingEmployeeId) {
+            // ÚPRAVA
+            const { error } = await supabaseClient
+                .from('employees')
+                .update({ name, hourly_rate: rate })
+                .eq('id', editingEmployeeId);
+            
+            if (error) throw error;
+            alert('✅ Zamestnanec bol upravený!');
+        } else {
+            // NOVÝ
+            const { error } = await supabaseClient.from('employees').insert({
+                name: name,
+                hourly_rate: rate
+            });
 
-        if (error) throw error;
+            if (error) throw error;
+            alert('✅ Zamestnanec bol pridaný!');
+        }
 
         closeAddEmployee();
         loadEmployees();
@@ -306,7 +332,10 @@ async function loadEmployees() {
                     <div class="list-item-title">${emp.name}</div>
                     <div class="list-item-subtitle">Hodinová mzda: <strong>${emp.hourly_rate} €</strong></div>
                 </div>
-                <button onclick="deleteEmployee(${emp.id})" class="btn-item-delete">🗑️</button>
+                <div class="list-item-actions">
+                    <button onclick="openEditEmployee(${emp.id}, '${emp.name}', ${emp.hourly_rate})" class="btn-item-delete">✏️</button>
+                    <button onclick="deleteEmployee(${emp.id})" class="btn-item-delete">🗑️</button>
+                </div>
             `;
             list.appendChild(div);
         });
@@ -568,7 +597,17 @@ async function calculateSalaries() {
         const secondHalfStart = `${year}-${month}-16`;
         const secondHalfEnd = `${year}-${month}-31`;
 
-        const { data: employees } = await supabaseClient.from('employees').select('*').order('name', { ascending: true });
+        const { data: employees, error: empError } = await supabaseClient
+            .from('employees')
+            .select('*')
+            .order('name', { ascending: true });
+
+        if (empError) throw empError;
+
+        if (!employees || employees.length === 0) {
+            document.getElementById('salariesList').innerHTML = '<div class="empty-state">Žiadni zamestnanci v systéme.</div>';
+            return;
+        }
 
         let html = `<div class="salary-header"><h3>Výplaty za ${monthInput}</h3></div>`;
         html += `<div class="salary-table-wrapper"><table class="salary-table">
@@ -583,29 +622,35 @@ async function calculateSalaries() {
                     </thead>
                     <tbody>`;
 
+        let totalMonthSalary = 0;
+        let totalMonthHours = 0;
+
         for (const emp of employees) {
-            const { data: firstHalf } = await supabaseClient
+            const { data: firstHalf, error: fhError } = await supabaseClient
                 .from('attendance')
                 .select('hours')
                 .eq('employee_id', emp.id)
                 .gte('date', firstHalfStart)
                 .lte('date', firstHalfEnd);
 
-            const hoursFirstHalf = firstHalf ? firstHalf.reduce((sum, att) => sum + parseFloat(att.hours), 0) : 0;
+            const hoursFirstHalf = (firstHalf && !fhError) ? firstHalf.reduce((sum, att) => sum + parseFloat(att.hours || 0), 0) : 0;
             const salaryFirstHalf = hoursFirstHalf * emp.hourly_rate;
 
-            const { data: secondHalf } = await supabaseClient
+            const { data: secondHalf, error: shError } = await supabaseClient
                 .from('attendance')
                 .select('hours')
                 .eq('employee_id', emp.id)
                 .gte('date', secondHalfStart)
                 .lte('date', secondHalfEnd);
 
-            const hoursSecondHalf = secondHalf ? secondHalf.reduce((sum, att) => sum + parseFloat(att.hours), 0) : 0;
+            const hoursSecondHalf = (secondHalf && !shError) ? secondHalf.reduce((sum, att) => sum + parseFloat(att.hours || 0), 0) : 0;
             const salarySecondHalf = hoursSecondHalf * emp.hourly_rate;
 
             const totalHours = hoursFirstHalf + hoursSecondHalf;
             const totalSalary = salaryFirstHalf + salarySecondHalf;
+
+            totalMonthHours += totalHours;
+            totalMonthSalary += totalSalary;
 
             html += `
                 <tr>
@@ -618,11 +663,18 @@ async function calculateSalaries() {
             `;
         }
 
+        html += `
+            <tr style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%); font-weight: 700; border-top: 2px solid #667eea;">
+                <td colspan="2">CELKEM ZA MESIAC</td>
+                <td colspan="3"><strong>${totalMonthHours.toFixed(1)}h (${totalMonthSalary.toFixed(2)} €)</strong></td>
+            </tr>
+        `;
+
         html += `</tbody></table></div>`;
         document.getElementById('salariesList').innerHTML = html;
     } catch (error) {
         console.error('Chyba pri výpočte výplat:', error);
-        alert('Chyba: ' + error.message);
+        document.getElementById('salariesList').innerHTML = `<div class="empty-state">Chyba: ${error.message}</div>`;
     }
 }
 
