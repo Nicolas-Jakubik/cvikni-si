@@ -203,10 +203,6 @@ function closeAddProject() {
 async function initializeAdmin() {
     await initSupabase();
     
-    const today = new Date().toISOString().split('T')[0];
-    const filterDateInput = document.getElementById('filterDate');
-    if (filterDateInput) filterDateInput.value = today;
-    
     if (localStorage.getItem('adminLoggedIn') === 'true') {
         showAdminPanel();
     }
@@ -424,28 +420,39 @@ async function loadProjects() {
 // ============ DOCHÁDZKA ============
 
 async function loadAttendance() {
-    await filterAttendance();
-}
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const monthStart = `${year}-${month}-01`;
+    
+    // Posledný deň mesiaca
+    const lastDay = new Date(year, today.getMonth() + 1, 0).getDate();
+    const monthEnd = `${year}-${month}-${String(lastDay).padStart(2, '0')}`;
 
-async function filterAttendance() {
-    const filterDate = document.getElementById('filterDate').value;
+    // Zobraz mesiac v headeri
+    const monthNames = ['Január', 'Február', 'Marec', 'Apríl', 'Máj', 'Jún', 
+                       'Júl', 'August', 'September', 'Október', 'November', 'December'];
+    const monthTitle = document.getElementById('attendanceMonth');
+    if (monthTitle) {
+        monthTitle.textContent = `${monthNames[today.getMonth()]} ${year}`;
+    }
 
     try {
-        let query = supabaseClient.from('attendance').select(`
-            id, 
-            employee_id, 
-            project_id, 
-            hours, 
-            date, 
-            employees(name), 
-            projects(name)
-        `).order('date', { ascending: false });
+        const { data, error } = await supabaseClient
+            .from('attendance')
+            .select(`
+                id, 
+                employee_id, 
+                project_id, 
+                hours, 
+                date, 
+                employees(name), 
+                projects(name)
+            `)
+            .gte('date', monthStart)
+            .lte('date', monthEnd)
+            .order('date', { ascending: false });
 
-        if (filterDate) {
-            query = query.eq('date', filterDate);
-        }
-
-        const { data, error } = await query;
         if (error) throw error;
 
         const list = document.getElementById('attendanceList');
@@ -454,7 +461,7 @@ async function filterAttendance() {
         list.innerHTML = '';
 
         if (data.length === 0) {
-            list.innerHTML = '<div class="empty-state">Žiadne záznamy na tento deň.</div>';
+            list.innerHTML = '<div class="empty-state">Žiadne záznamy v tomto mesiaci.</div>';
             return;
         }
 
