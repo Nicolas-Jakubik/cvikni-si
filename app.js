@@ -178,7 +178,7 @@ function switchSection(sectionId) {
 }
 
 function openAddEmployee() {
-    document.getElementById('addEmployeeForm').style.display = 'block';
+    document.getElementById('addEmployeeForm').style.display = 'flex';
     document.getElementById('newEmployeeName').focus();
 }
 
@@ -189,7 +189,7 @@ function closeAddEmployee() {
 }
 
 function openAddProject() {
-    document.getElementById('addProjectForm').style.display = 'block';
+    document.getElementById('addProjectForm').style.display = 'flex';
     document.getElementById('newProjectName').focus();
 }
 
