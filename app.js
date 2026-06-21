@@ -28,7 +28,7 @@ async function loadEmployeesForLead() {
         const select = document.getElementById('employeeName');
         if (!select) return;
         
-        select.innerHTML = '<option value="">-- Vyber meno --</option>';
+        select.innerHTML = '<option value="">Vyber meno</option>';
         data.forEach(emp => {
             const option = document.createElement('option');
             option.value = emp.id;
@@ -53,7 +53,7 @@ async function loadProjectsForLead() {
         const select = document.getElementById('projectName');
         if (!select) return;
         
-        select.innerHTML = '<option value="">-- Vyber projekt --</option>';
+        select.innerHTML = '<option value="">Vyber projekt</option>';
         data.forEach(proj => {
             const option = document.createElement('option');
             option.value = proj.id;
@@ -133,7 +133,72 @@ function goToAdmin() {
     window.location.href = 'admin.html';
 }
 
-// ============ ADMIN PANEL ============
+// ============ ADMIN PANEL - NOVÉ FUNKCIE ============
+
+function switchSection(sectionId) {
+    // Skry všetky sekcie
+    document.querySelectorAll('.section').forEach(el => {
+        el.classList.remove('active');
+    });
+
+    // Zobraz vybraný section
+    document.getElementById(sectionId).classList.add('active');
+
+    // Update navbar
+    document.querySelectorAll('.nav-item').forEach(el => {
+        el.classList.remove('active');
+    });
+    event.target.closest('.nav-item').classList.add('active');
+
+    // Update titulok
+    const titles = {
+        dashboard: '📊 Dashboard',
+        employees: '👥 Zamestnanci',
+        projects: '📦 Projekty',
+        attendance: '📋 Dochádzka',
+        salaries: '💰 Výplaty'
+    };
+    document.getElementById('sectionTitle').textContent = titles[sectionId];
+
+    // Načítaj dáta
+    if (sectionId === 'dashboard') {
+        loadDashboard();
+    } else if (sectionId === 'employees') {
+        loadEmployees();
+    } else if (sectionId === 'projects') {
+        loadProjects();
+    } else if (sectionId === 'attendance') {
+        loadAttendance();
+    } else if (sectionId === 'salaries') {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        document.getElementById('salaryMonth').value = `${year}-${month}`;
+    }
+}
+
+function openAddEmployee() {
+    document.getElementById('addEmployeeForm').style.display = 'block';
+    document.getElementById('newEmployeeName').focus();
+}
+
+function closeAddEmployee() {
+    document.getElementById('addEmployeeForm').style.display = 'none';
+    document.getElementById('newEmployeeName').value = '';
+    document.getElementById('newEmployeeRate').value = '';
+}
+
+function openAddProject() {
+    document.getElementById('addProjectForm').style.display = 'block';
+    document.getElementById('newProjectName').focus();
+}
+
+function closeAddProject() {
+    document.getElementById('addProjectForm').style.display = 'none';
+    document.getElementById('newProjectName').value = '';
+}
+
+// ============ ADMIN INICIALIZÁCIA ============
 
 async function initializeAdmin() {
     await initSupabase();
@@ -141,12 +206,6 @@ async function initializeAdmin() {
     const today = new Date().toISOString().split('T')[0];
     const filterDateInput = document.getElementById('filterDate');
     if (filterDateInput) filterDateInput.value = today;
-    
-    const salaryMonthInput = document.getElementById('salaryMonth');
-    if (salaryMonthInput) {
-        const currentMonth = new Date().toISOString().substring(0, 7);
-        salaryMonthInput.value = currentMonth;
-    }
     
     if (localStorage.getItem('adminLoggedIn') === 'true') {
         showAdminPanel();
@@ -175,11 +234,8 @@ function showAdminPanel() {
     const adminPanel = document.getElementById('adminPanel');
     
     if (loginModal) loginModal.style.display = 'none';
-    if (adminPanel) adminPanel.style.display = 'block';
+    if (adminPanel) adminPanel.style.display = 'flex';
     
-    loadEmployees();
-    loadProjects();
-    loadAttendance();
     loadDashboard();
 }
 
@@ -218,8 +274,7 @@ async function addEmployee() {
 
         if (error) throw error;
 
-        document.getElementById('newEmployeeName').value = '';
-        document.getElementById('newEmployeeRate').value = '';
+        closeAddEmployee();
         loadEmployees();
         loadEmployeesForLead();
     } catch (error) {
@@ -251,7 +306,7 @@ async function loadEmployees() {
         list.innerHTML = '';
 
         if (data.length === 0) {
-            list.innerHTML = '<p>Žiadni zamestnanci</p>';
+            list.innerHTML = '<div class="empty-state">Žiadni zamestnanci. Pridaj prvého!</div>';
             return;
         }
 
@@ -259,11 +314,11 @@ async function loadEmployees() {
             const div = document.createElement('div');
             div.className = 'list-item';
             div.innerHTML = `
-                <div>
-                    <strong>${emp.name}</strong><br>
-                    <small>Hodinová mzda: ${emp.hourly_rate} €</small>
+                <div class="list-item-content">
+                    <div class="list-item-title">${emp.name}</div>
+                    <div class="list-item-subtitle">Hodinová mzda: <strong>${emp.hourly_rate} €</strong></div>
                 </div>
-                <button onclick="deleteEmployee(${emp.id})" class="btn-delete">Zmaž</button>
+                <button onclick="deleteEmployee(${emp.id})" class="btn-item-delete">🗑️</button>
             `;
             list.appendChild(div);
         });
@@ -290,7 +345,7 @@ async function addProject() {
 
         if (error) throw error;
 
-        document.getElementById('newProjectName').value = '';
+        closeAddProject();
         loadProjects();
         loadProjectsForLead();
     } catch (error) {
@@ -337,7 +392,7 @@ async function loadProjects() {
         list.innerHTML = '';
 
         if (data.length === 0) {
-            list.innerHTML = '<p>Žiadne projekty</p>';
+            list.innerHTML = '<div class="empty-state">Žiadne projekty. Pridaj prvý!</div>';
             return;
         }
 
@@ -345,18 +400,18 @@ async function loadProjects() {
             const div = document.createElement('div');
             div.className = 'list-item';
             const statusText = proj.is_active ? '✅ Aktívny' : '❌ Neaktívny';
-            const statusClass = proj.is_active ? '' : 'inactive-project';
+            const statusClass = proj.is_active ? 'active' : 'inactive';
             
             div.innerHTML = `
-                <div class="${statusClass}">
-                    <strong>${proj.name}</strong><br>
-                    <small>${statusText}</small>
+                <div class="list-item-content">
+                    <div class="list-item-title">${proj.name}</div>
+                    <div class="list-item-subtitle status-${statusClass}">${statusText}</div>
                 </div>
                 <div class="list-item-actions">
-                    <button onclick="toggleProject(${proj.id}, ${proj.is_active})" class="btn-toggle ${!proj.is_active ? 'inactive' : ''}">
-                        ${proj.is_active ? 'Deaktivuj' : 'Aktivuj'}
+                    <button onclick="toggleProject(${proj.id}, ${proj.is_active})" class="btn-item-toggle">
+                        ${proj.is_active ? '🔴' : '🟢'}
                     </button>
-                    <button onclick="deleteProject(${proj.id})" class="btn-delete">Zmaž</button>
+                    <button onclick="deleteProject(${proj.id})" class="btn-item-delete">🗑️</button>
                 </div>
             `;
             list.appendChild(div);
@@ -399,7 +454,7 @@ async function filterAttendance() {
         list.innerHTML = '';
 
         if (data.length === 0) {
-            list.innerHTML = '<p>Žiadne záznamy</p>';
+            list.innerHTML = '<div class="empty-state">Žiadne záznamy na tento deň.</div>';
             return;
         }
 
@@ -410,12 +465,11 @@ async function filterAttendance() {
             const projName = att.projects ? att.projects.name : 'N/A';
             
             div.innerHTML = `
-                <div>
-                    <strong>${empName}</strong><br>
-                    <small>Projekt: ${projName}</small><br>
-                    <small>Dátum: ${att.date} | Hodiny: ${att.hours}</small>
+                <div class="list-item-content">
+                    <div class="list-item-title">${empName}</div>
+                    <div class="list-item-subtitle">📦 ${projName} • 📅 ${att.date} • ⏱️ ${att.hours}h</div>
                 </div>
-                <button onclick="deleteAttendance(${att.id})" class="btn-delete">Zmaž</button>
+                <button onclick="deleteAttendance(${att.id})" class="btn-item-delete">🗑️</button>
             `;
             list.appendChild(div);
         });
@@ -467,20 +521,32 @@ async function loadDashboard() {
         
         dashboard.innerHTML = `
             <div class="dashboard-card">
-                <h3>👥 Zamestnanci</h3>
-                <div class="value">${employees ? employees.length : 0}</div>
+                <div class="card-icon">👥</div>
+                <div class="card-content">
+                    <div class="card-label">Zamestnanci</div>
+                    <div class="card-value">${employees ? employees.length : 0}</div>
+                </div>
             </div>
             <div class="dashboard-card">
-                <h3>📦 Projekty</h3>
-                <div class="value">${projects ? projects.length : 0}</div>
+                <div class="card-icon">📦</div>
+                <div class="card-content">
+                    <div class="card-label">Projekty</div>
+                    <div class="card-value">${projects ? projects.length : 0}</div>
+                </div>
             </div>
             <div class="dashboard-card">
-                <h3>⏱️ Hodiny dnes</h3>
-                <div class="value">${totalHoursToday.toFixed(1)}</div>
+                <div class="card-icon">⏱️</div>
+                <div class="card-content">
+                    <div class="card-label">Hodiny dnes</div>
+                    <div class="card-value">${totalHoursToday.toFixed(1)}</div>
+                </div>
             </div>
             <div class="dashboard-card">
-                <h3>📊 Hodiny tento mesiac</h3>
-                <div class="value">${totalHoursMonth.toFixed(1)}</div>
+                <div class="card-icon">📊</div>
+                <div class="card-content">
+                    <div class="card-label">Hodiny mesiac</div>
+                    <div class="card-value">${totalHoursMonth.toFixed(1)}</div>
+                </div>
             </div>
         `;
     } catch (error) {
@@ -507,8 +573,8 @@ async function calculateSalaries() {
 
         const { data: employees } = await supabaseClient.from('employees').select('*').order('name', { ascending: true });
 
-        let html = `<h3>Výplaty za ${monthInput}</h3>`;
-        html += `<table class="salary-table">
+        let html = `<div class="salary-header"><h3>Výplaty za ${monthInput}</h3></div>`;
+        html += `<div class="salary-table-wrapper"><table class="salary-table">
                     <thead>
                         <tr>
                             <th>Meno</th>
@@ -555,7 +621,7 @@ async function calculateSalaries() {
             `;
         }
 
-        html += `</tbody></table>`;
+        html += `</tbody></table></div>`;
         document.getElementById('salariesList').innerHTML = html;
     } catch (error) {
         console.error('Chyba pri výpočte výplat:', error);
@@ -582,17 +648,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadEmployeesForLead();
         loadProjectsForLead();
         
-        // Nastav dnes ako predvolený dátum
         setTodayDate();
-        
-        // Inicializuj výpočet hodín
         calculateWorkHours();
         
-        // Počítaj hodiny pri zmene času
         document.getElementById('timeFrom').addEventListener('change', calculateWorkHours);
         document.getElementById('timeTo').addEventListener('change', calculateWorkHours);
         document.getElementById('breakMinutes').addEventListener('input', calculateWorkHours);
-        
         document.getElementById('attendanceForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             await submitAttendance();
