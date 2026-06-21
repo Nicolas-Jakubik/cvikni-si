@@ -5,10 +5,8 @@ const ADMIN_PASSWORD = 'admin123';
 
 let supabaseClient = null;
 
-// Inicializácia Supabase
 async function initSupabase() {
     if (supabaseClient) return;
-    
     try {
         const { createClient } = window.supabase;
         supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -133,24 +131,20 @@ function goToAdmin() {
     window.location.href = 'admin.html';
 }
 
-// ============ ADMIN PANEL - NOVÉ FUNKCIE ============
+// ============ ADMIN PANEL ============
 
 function switchSection(sectionId) {
-    // Skry všetky sekcie
     document.querySelectorAll('.section').forEach(el => {
         el.classList.remove('active');
     });
 
-    // Zobraz vybraný section
     document.getElementById(sectionId).classList.add('active');
 
-    // Update navbar
     document.querySelectorAll('.nav-item').forEach(el => {
         el.classList.remove('active');
     });
     event.target.closest('.nav-item').classList.add('active');
 
-    // Update titulok
     const titles = {
         dashboard: '📊 Dashboard',
         employees: '👥 Zamestnanci',
@@ -160,7 +154,6 @@ function switchSection(sectionId) {
     };
     document.getElementById('sectionTitle').textContent = titles[sectionId];
 
-    // Načítaj dáta
     if (sectionId === 'dashboard') {
         loadDashboard();
     } else if (sectionId === 'employees') {
@@ -174,6 +167,7 @@ function switchSection(sectionId) {
         const year = today.getFullYear();
         const month = String(today.getMonth() + 1).padStart(2, '0');
         document.getElementById('salaryMonth').value = `${year}-${month}`;
+        calculateSalaries();
     }
 }
 
@@ -197,8 +191,6 @@ function closeAddProject() {
     document.getElementById('addProjectForm').style.display = 'none';
     document.getElementById('newProjectName').value = '';
 }
-
-// ============ ADMIN INICIALIZÁCIA ============
 
 async function initializeAdmin() {
     await initSupabase();
@@ -425,11 +417,9 @@ async function loadAttendance() {
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const monthStart = `${year}-${month}-01`;
     
-    // Posledný deň mesiaca
     const lastDay = new Date(year, today.getMonth() + 1, 0).getDate();
     const monthEnd = `${year}-${month}-${String(lastDay).padStart(2, '0')}`;
 
-    // Zobraz mesiac v headeri
     const monthNames = ['Január', 'Február', 'Marec', 'Apríl', 'Máj', 'Jún', 
                        'Júl', 'August', 'September', 'Október', 'November', 'December'];
     const monthTitle = document.getElementById('attendanceMonth');
@@ -646,11 +636,9 @@ function setTodayDate() {
 document.addEventListener('DOMContentLoaded', async () => {
     await initSupabase();
     
-    // Admin panel
     if (document.getElementById('loginModal')) {
         initializeAdmin();
     } 
-    // Vedúci formulár
     else if (document.getElementById('attendanceForm')) {
         loadEmployeesForLead();
         loadProjectsForLead();
