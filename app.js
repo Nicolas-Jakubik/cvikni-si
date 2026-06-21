@@ -11,8 +11,10 @@ async function initSupabase() {
     try {
         const { createClient } = window.supabase;
         supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+        console.log('✅ Supabase connected');
     } catch (error) {
-        console.error('Chyba pri inicializácii Supabase:', error);
+        console.error('❌ Chyba pri inicializácii Supabase:', error);
+        alert('❌ Chyba pri pripojení k Supabase!');
     }
 }
 
@@ -22,20 +24,25 @@ async function loadEmployeesForLead() {
     await initSupabase();
     try {
         const { data, error } = await supabaseClient.from('employees').select('id, name');
-        if (error) throw error;
+        if (error) {
+            console.error('❌ Chyba pri načítaní zamestnancov:', error);
+            return;
+        }
         
         const select = document.getElementById('employeeName');
         if (!select) return;
         
         select.innerHTML = '<option value="">Vyber meno</option>';
-        data.forEach(emp => {
-            const option = document.createElement('option');
-            option.value = emp.id;
-            option.textContent = emp.name;
-            select.appendChild(option);
-        });
+        if (data && data.length > 0) {
+            data.forEach(emp => {
+                const option = document.createElement('option');
+                option.value = emp.id;
+                option.textContent = emp.name;
+                select.appendChild(option);
+            });
+        }
     } catch (error) {
-        console.error('Chyba pri načítaní zamestnancov:', error);
+        console.error('❌ Chyba pri načítaní zamestnancov:', error);
     }
 }
 
@@ -47,20 +54,25 @@ async function loadProjectsForLead() {
             .select('id, name')
             .eq('is_active', true);
         
-        if (error) throw error;
+        if (error) {
+            console.error('❌ Chyba pri načítaní projektov:', error);
+            return;
+        }
         
         const select = document.getElementById('projectName');
         if (!select) return;
         
         select.innerHTML = '<option value="">Vyber projekt</option>';
-        data.forEach(proj => {
-            const option = document.createElement('option');
-            option.value = proj.id;
-            option.textContent = proj.name;
-            select.appendChild(option);
-        });
+        if (data && data.length > 0) {
+            data.forEach(proj => {
+                const option = document.createElement('option');
+                option.value = proj.id;
+                option.textContent = proj.name;
+                select.appendChild(option);
+            });
+        }
     } catch (error) {
-        console.error('Chyba pri načítaní projektov:', error);
+        console.error('❌ Chyba pri načítaní projektov:', error);
     }
 }
 
@@ -105,13 +117,16 @@ async function submitAttendance() {
 
     try {
         const { error } = await supabaseClient.from('attendance').insert({
-            employee_id: employeeId,
-            project_id: projectId,
+            employee_id: parseInt(employeeId),
+            project_id: parseInt(projectId),
             hours: calculatedHours,
             date: workDate
         });
 
-        if (error) throw error;
+        if (error) {
+            console.error('❌ Chyba pri ukladaní:', error);
+            throw error;
+        }
 
         messageDiv.className = 'message success';
         messageDiv.textContent = '✅ Hodiny boli uložené!';
@@ -263,11 +278,11 @@ function backToLead() {
 // ============ ZAMESTNANCI ============
 
 async function addEmployee() {
-    const name = document.getElementById('newEmployeeName').value;
+    const name = document.getElementById('newEmployeeName').value.trim();
     const rate = parseFloat(document.getElementById('newEmployeeRate').value);
 
     if (!name || !rate || rate <= 0) {
-        alert('Vyplň všetky polia správne!');
+        alert('❌ Vyplň všetky polia správne!');
         return;
     }
 
@@ -294,7 +309,8 @@ async function addEmployee() {
         loadEmployees();
         loadEmployeesForLead();
     } catch (error) {
-        alert('Chyba: ' + error.message);
+        console.error('❌ Chyba:', error);
+        alert('❌ Chyba: ' + error.message);
     }
 }
 
@@ -307,21 +323,25 @@ async function deleteEmployee(empId) {
         loadEmployees();
         loadEmployeesForLead();
     } catch (error) {
-        alert('Chyba: ' + error.message);
+        console.error('❌ Chyba:', error);
+        alert('❌ Chyba: ' + error.message);
     }
 }
 
 async function loadEmployees() {
     try {
         const { data, error } = await supabaseClient.from('employees').select('*').order('name', { ascending: true });
-        if (error) throw error;
+        if (error) {
+            console.error('❌ Chyba pri načítaní:', error);
+            throw error;
+        }
 
         const list = document.getElementById('employeesList');
         if (!list) return;
         
         list.innerHTML = '';
 
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             list.innerHTML = '<div class="empty-state">Žiadni zamestnanci. Pridaj prvého!</div>';
             return;
         }
@@ -342,17 +362,17 @@ async function loadEmployees() {
             list.appendChild(div);
         });
     } catch (error) {
-        console.error('Chyba pri načítaní zamestnancov:', error);
+        console.error('❌ Chyba pri načítaní zamestnancov:', error);
     }
 }
 
 // ============ PROJEKTY ============
 
 async function addProject() {
-    const name = document.getElementById('newProjectName').value;
+    const name = document.getElementById('newProjectName').value.trim();
 
     if (!name) {
-        alert('Zadaj názov projektu!');
+        alert('❌ Zadaj názov projektu!');
         return;
     }
 
@@ -368,7 +388,8 @@ async function addProject() {
         loadProjects();
         loadProjectsForLead();
     } catch (error) {
-        alert('Chyba: ' + error.message);
+        console.error('❌ Chyba:', error);
+        alert('❌ Chyba: ' + error.message);
     }
 }
 
@@ -383,7 +404,8 @@ async function toggleProject(projId, currentStatus) {
         loadProjects();
         loadProjectsForLead();
     } catch (error) {
-        alert('Chyba: ' + error.message);
+        console.error('❌ Chyba:', error);
+        alert('❌ Chyba: ' + error.message);
     }
 }
 
@@ -396,21 +418,25 @@ async function deleteProject(projId) {
         loadProjects();
         loadProjectsForLead();
     } catch (error) {
-        alert('Chyba: ' + error.message);
+        console.error('❌ Chyba:', error);
+        alert('❌ Chyba: ' + error.message);
     }
 }
 
 async function loadProjects() {
     try {
         const { data, error } = await supabaseClient.from('projects').select('*').order('name', { ascending: true });
-        if (error) throw error;
+        if (error) {
+            console.error('❌ Chyba pri načítaní:', error);
+            throw error;
+        }
 
         const list = document.getElementById('projectsList');
         if (!list) return;
         
         list.innerHTML = '';
 
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             list.innerHTML = '<div class="empty-state">Žiadne projekty. Pridaj prvý!</div>';
             return;
         }
@@ -436,7 +462,7 @@ async function loadProjects() {
             list.appendChild(div);
         });
     } catch (error) {
-        console.error('Chyba pri načítaní projektov:', error);
+        console.error('❌ Chyba pri načítaní projektov:', error);
     }
 }
 
@@ -477,14 +503,17 @@ async function loadAttendance() {
             .lte('date', monthEnd)
             .order('date', { ascending: false });
 
-        if (error) throw error;
+        if (error) {
+            console.error('❌ Chyba pri načítaní:', error);
+            throw error;
+        }
 
         const list = document.getElementById('attendanceList');
         if (!list) return;
         
         list.innerHTML = '';
 
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             list.innerHTML = `<div class="empty-state">Žiadne záznamy v ${monthNames[parseInt(month) - 1]} ${year}.</div>`;
             return;
         }
@@ -505,7 +534,7 @@ async function loadAttendance() {
             list.appendChild(div);
         });
     } catch (error) {
-        console.error('Chyba pri načítaní dochádzky:', error);
+        console.error('❌ Chyba pri načítaní dochádzky:', error);
     }
 }
 
@@ -517,7 +546,8 @@ async function deleteAttendance(attId) {
         if (error) throw error;
         loadAttendance();
     } catch (error) {
-        alert('Chyba: ' + error.message);
+        console.error('❌ Chyba:', error);
+        alert('❌ Chyba: ' + error.message);
     }
 }
 
@@ -581,7 +611,7 @@ async function loadDashboard() {
             </div>
         `;
     } catch (error) {
-        console.error('Chyba pri načítaní dashboardu:', error);
+        console.error('❌ Chyba pri načítaní dashboardu:', error);
     }
 }
 
@@ -610,7 +640,10 @@ async function calculateSalaries() {
             .select('*')
             .order('name', { ascending: true });
 
-        if (empError) throw empError;
+        if (empError) {
+            console.error('❌ Chyba pri načítaní zamestnancov:', empError);
+            throw empError;
+        }
 
         if (!employees || employees.length === 0) {
             document.getElementById('salariesList').innerHTML = '<div class="empty-state">Žiadni zamestnanci v systéme.</div>';
@@ -684,8 +717,8 @@ async function calculateSalaries() {
         html += `</tbody></table></div>`;
         document.getElementById('salariesList').innerHTML = html;
     } catch (error) {
-        console.error('Chyba pri výpočte výplat:', error);
-        document.getElementById('salariesList').innerHTML = `<div class="empty-state">Chyba: ${error.message}</div>`;
+        console.error('❌ Chyba pri výpočte výplat:', error);
+        document.getElementById('salariesList').innerHTML = `<div class="empty-state">❌ Chyba: ${error.message}</div>`;
     }
 }
 
