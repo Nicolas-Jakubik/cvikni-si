@@ -5,6 +5,7 @@ const ADMIN_PASSWORD = 'admin123';
 
 let supabaseClient = null;
 let editingEmployeeId = null;
+let projectDetailChartInstance = null;
 
 async function initSupabase() {
     if (supabaseClient) return;
@@ -449,14 +450,14 @@ async function loadProjects() {
             
             div.innerHTML = `
                 <div class="list-item-content">
-                    <div class="list-item-title">${proj.name}</div>
+                    <div class="list-item-title" style="cursor: pointer;" onclick="event.stopPropagation(); showProjectDetail(${proj.id}, '${proj.name}')">${proj.name}</div>
                     <div class="list-item-subtitle status-${statusClass}">${statusText}</div>
                 </div>
                 <div class="list-item-actions">
-                    <button onclick="toggleProject(${proj.id}, ${proj.is_active})" class="btn-item-toggle">
+                    <button onclick="event.stopPropagation(); toggleProject(${proj.id}, ${proj.is_active})" class="btn-item-toggle">
                         ${proj.is_active ? '🔴' : '🟢'}
                     </button>
-                    <button onclick="deleteProject(${proj.id})" class="btn-item-delete">🗑️</button>
+                    <button onclick="event.stopPropagation(); deleteProject(${proj.id})" class="btn-item-delete">🗑️</button>
                 </div>
             `;
             list.appendChild(div);
@@ -975,7 +976,12 @@ async function showProjectDetail(projectId, projectName) {
 
         const ctx = document.getElementById('projectDetailChart')?.getContext('2d');
         if (ctx && window.Chart) {
-            new Chart(ctx, {
+            // Zničíme starý chart ak existuje
+            if (projectDetailChartInstance) {
+                projectDetailChartInstance.destroy();
+            }
+            
+            projectDetailChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: chartLabels,
@@ -1020,12 +1026,16 @@ async function showProjectDetail(projectId, projectName) {
 
 function closeProjectDetail() {
     document.getElementById('projectDetailModal').style.display = 'none';
+    if (projectDetailChartInstance) {
+        projectDetailChartInstance.destroy();
+        projectDetailChartInstance = null;
+    }
 }
 
 window.onclick = function(event) {
     const modal = document.getElementById('projectDetailModal');
     if (event.target === modal) {
-        modal.style.display = 'none';
+        closeProjectDetail();
     }
 }
 
