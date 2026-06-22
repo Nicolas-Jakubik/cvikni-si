@@ -591,7 +591,7 @@ async function loadDashboard() {
             projectsHours[projName] = (projectsHours[projName] || 0) + parseFloat(att.hours);
         });
 
-        const projectsList = document.getElementById('projectsList');
+        const projectsList = document.getElementById('dashboardProjectsList');
         projectsList.innerHTML = '';
         if (projects && projects.length > 0) {
             projects.slice(0, 5).forEach(proj => {
