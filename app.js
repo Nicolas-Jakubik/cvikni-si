@@ -555,7 +555,6 @@ async function deleteAttendance(attId) {
 
 async function loadDashboard() {
     try {
-        // LOAD ALL DATA
         const { data: employees } = await supabaseClient.from('employees').select('id, name');
         const { data: projects } = await supabaseClient.from('projects').select('*').eq('is_active', true);
         
@@ -598,6 +597,7 @@ async function loadDashboard() {
                 const hours = projectsHours[proj.name] || 0;
                 const div = document.createElement('div');
                 div.className = 'project-item';
+                div.style.cursor = 'pointer';
                 div.innerHTML = `
                     <div class="project-item-header">
                         <span class="project-name">🏗️ ${proj.name}</span>
@@ -607,6 +607,7 @@ async function loadDashboard() {
                         <span>⏱️ ${hours.toFixed(1)}h</span>
                     </div>
                 `;
+                div.onclick = () => showProjectDetail(proj.id, proj.name);
                 projectsList.appendChild(div);
             });
         }
@@ -738,8 +739,6 @@ async function loadDashboard() {
 
 // ============ VÝPLATY ============
 
-// ============ VÝPLATY ============
-
 async function calculateSalaries() {
     const monthInput = document.getElementById('salaryMonth').value;
     
@@ -757,14 +756,11 @@ async function calculateSalaries() {
         const firstHalfEnd = `${year}-${month}-15`;
         const secondHalfStart = `${year}-${month}-16`;
         
-        // Posledný deň mesiaca
         const lastDay = new Date(year, parseInt(month), 0).getDate();
         const secondHalfEnd = `${year}-${month}-${String(lastDay).padStart(2, '0')}`;
 
         console.log('📊 Výpočet výplat za:', monthInput);
-        console.log('Rozsahy dátumov:', { firstHalfStart, firstHalfEnd, secondHalfStart, secondHalfEnd });
 
-        // LOAD ZAMESTNANCOV
         const { data: employees, error: empError } = await supabaseClient
             .from('employees')
             .select('*')
@@ -804,7 +800,6 @@ async function calculateSalaries() {
         for (const emp of employees) {
             console.log(`\n📝 Spracúvam: ${emp.name} (ID: ${emp.id})`);
 
-            // 1. POLOVICA
             const { data: firstHalf, error: fhError } = await supabaseClient
                 .from('attendance')
                 .select('hours, date')
@@ -815,9 +810,7 @@ async function calculateSalaries() {
             console.log(`  1. pol. data:`, firstHalf, 'Error:', fhError);
             const hoursFirstHalf = (firstHalf && !fhError) ? firstHalf.reduce((sum, att) => sum + parseFloat(att.hours || 0), 0) : 0;
             const salaryFirstHalf = hoursFirstHalf * emp.hourly_rate;
-            console.log(`  1. pol: ${hoursFirstHalf}h × ${emp.hourly_rate}€ = ${salaryFirstHalf}€`);
 
-            // 2. POLOVICA
             const { data: secondHalf, error: shError } = await supabaseClient
                 .from('attendance')
                 .select('hours, date')
@@ -828,7 +821,6 @@ async function calculateSalaries() {
             console.log(`  2. pol. data:`, secondHalf, 'Error:', shError);
             const hoursSecondHalf = (secondHalf && !shError) ? secondHalf.reduce((sum, att) => sum + parseFloat(att.hours || 0), 0) : 0;
             const salarySecondHalf = hoursSecondHalf * emp.hourly_rate;
-            console.log(`  2. pol: ${hoursSecondHalf}h × ${emp.hourly_rate}€ = ${salarySecondHalf}€`);
 
             const totalHours = hoursFirstHalf + hoursSecondHalf;
             const totalSalary = salaryFirstHalf + salarySecondHalf;
@@ -868,6 +860,173 @@ function setTodayDate() {
     const today = new Date().toISOString().split('T')[0];
     const dateInput = document.getElementById('workDate');
     if (dateInput) dateInput.value = today;
+}
+
+// ============ PROJECT DETAIL ============
+
+async function showProjectDetail(projectId, projectName) {
+    try {
+        console.log('🏗️ Zobrazujem detail projektu:', projectName);
+
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const monthStart = `${year}-${month}-01`;
+
+        const { data: projectData, error: projError } = await supabaseClient
+            .from('attendance')
+            .select('hours, date, employee_id, employees(name, hourly_rate)')
+            .eq('project_id', projectId)
+            .gte('date', monthStart);
+
+        if (projError) throw projError;
+
+        if (!projectData || projectData.length === 0) {
+            document.getElementById('projectDetailModal').style.display = 'flex';
+            document.getElementById('projectDetailName').textContent = projectName;
+            document.getElementById('projectDetailWorkers').innerHTML = '<div class="empty-state">Žiadna aktivita na tomto projekte.</div>';
+            return;
+        }
+
+        const totalHours = projectData.reduce((sum, att) => sum + parseFloat(att.hours), 0);
+        
+        const workersMap = {};
+        projectData.forEach(att => {
+            const name = att.employees?.name || 'Neznámy';
+            const rate = att.employees?.hourly_rate || 0;
+            if (!workersMap[name]) {
+                workersMap[name] = { hours: 0, rate };
+            }
+            workersMap[name].hours += parseFloat(att.hours);
+        });
+
+        const totalCost = Object.values(workersMap).reduce((sum, w) => sum + (w.hours * w.rate), 0);
+        const workDays = new Set(projectData.map(att => att.date)).size;
+        const workersCount = Object.keys(workersMap).length;
+
+        document.getElementById('projectDetailName').textContent = projectName;
+        document.getElementById('detailTotalHours').textContent = totalHours.toFixed(1) + 'h';
+        document.getElementById('detailWorkersCount').textContent = workersCount;
+        document.getElementById('detailTotalCost').textContent = totalCost.toFixed(2) + ' €';
+        document.getElementById('detailWorkDays').textContent = workDays;
+
+        const workersList = document.getElementById('projectDetailWorkers');
+        workersList.innerHTML = '';
+        Object.entries(workersMap)
+            .sort((a, b) => b[1].hours - a[1].hours)
+            .forEach(([name, data]) => {
+                const cost = (data.hours * data.rate).toFixed(2);
+                const div = document.createElement('div');
+                div.className = 'detail-worker-item';
+                div.innerHTML = `
+                    <div>
+                        <div class="detail-worker-name">👷 ${name}</div>
+                        <div style="color: #94a3b8; font-size: 0.85em;">💰 ${cost} € (${data.rate}€/h)</div>
+                    </div>
+                    <div class="detail-worker-hours">${data.hours.toFixed(1)}h</div>
+                `;
+                workersList.appendChild(div);
+            });
+
+        const dailyData = {};
+        projectData.forEach(att => {
+            const date = att.date;
+            if (!dailyData[date]) {
+                dailyData[date] = [];
+            }
+            const name = att.employees?.name || 'Neznámy';
+            dailyData[date].push({ name, hours: att.hours });
+        });
+
+        const timeline = document.getElementById('projectDetailTimeline');
+        timeline.innerHTML = '';
+        Object.keys(dailyData)
+            .sort()
+            .reverse()
+            .slice(0, 10)
+            .forEach(date => {
+                const items = dailyData[date];
+                const totalDay = items.reduce((sum, i) => sum + parseFloat(i.hours), 0);
+                const workers = items.map(i => i.name).join(', ');
+                
+                const div = document.createElement('div');
+                div.className = 'timeline-item';
+                div.innerHTML = `
+                    <div>
+                        <div class="timeline-date">📅 ${date}</div>
+                        <div class="timeline-info">${workers}</div>
+                    </div>
+                    <div style="color: #667eea; font-weight: 700;">${totalDay.toFixed(1)}h</div>
+                `;
+                timeline.appendChild(div);
+            });
+
+        const dailyHours = {};
+        projectData.forEach(att => {
+            dailyHours[att.date] = (dailyHours[att.date] || 0) + parseFloat(att.hours);
+        });
+
+        const sortedDates = Object.keys(dailyHours).sort();
+        const chartLabels = sortedDates.map(d => {
+            const date = new Date(d);
+            return date.getDate() + '.' + (date.getMonth() + 1);
+        });
+        const chartData = sortedDates.map(d => dailyHours[d]);
+
+        const ctx = document.getElementById('projectDetailChart')?.getContext('2d');
+        if (ctx && window.Chart) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Hodiny',
+                        data: chartData,
+                        backgroundColor: '#667eea',
+                        borderColor: '#667eea',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#94a3b8' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94a3b8' }
+                        }
+                    }
+                }
+            });
+        }
+
+        document.getElementById('projectDetailModal').style.display = 'flex';
+
+    } catch (error) {
+        console.error('❌ Chyba pri načítaní detailu projektu:', error);
+        alert('❌ Chyba: ' + error.message);
+    }
+}
+
+function closeProjectDetail() {
+    document.getElementById('projectDetailModal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('projectDetailModal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
 }
 
 // ============ INICIALIZÁCIA ============

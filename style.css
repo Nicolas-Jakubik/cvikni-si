@@ -1408,3 +1408,130 @@ body.admin-page {
         font-size: 1.6em;
     }
 }
+/* ============ PROJECT DETAIL MODAL ============ */
+.modal-large {
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.project-detail-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 20px 0;
+}
+
+.detail-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+.detail-metric {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border: 1px solid #667eea;
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+}
+
+.detail-metric-label {
+    color: #94a3b8;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.detail-metric-value {
+    color: #667eea;
+    font-size: 1.8em;
+    font-weight: 900;
+}
+
+.detail-section {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.detail-section h3 {
+    color: white;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    font-weight: 700;
+}
+
+.detail-section.full-width {
+    grid-column: 1 / -1;
+}
+
+/* WORKERS LIST */
+.detail-workers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.detail-worker-item {
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 4px solid #22c55e;
+    border-radius: 8px;
+    padding: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detail-worker-name {
+    color: white;
+    font-weight: 600;
+}
+
+.detail-worker-hours {
+    color: #22c55e;
+    font-weight: 700;
+    font-size: 1.1em;
+}
+
+/* TIMELINE */
+.detail-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.timeline-item {
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 4px solid #fb923c;
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.timeline-date {
+    color: #fb923c;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.timeline-info {
+    color: #cbd5e1;
+    font-size: 0.85em;
+}
+
+/* RESPONSIVE */
+@media (max-width: 640px) {
+    .modal-content {
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .detail-metrics {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

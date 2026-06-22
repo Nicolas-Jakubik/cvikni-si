@@ -104,10 +104,10 @@
                         <!-- PROJEKTY A HODINY -->
                         <div class="dashboard-grid-2">
                             <!-- AKTÍVNE PROJEKTY -->
-<div class="dashboard-section">
-    <h3>🏗️ Aktívne projekty</h3>
-    <div id="dashboardProjectsList" class="projects-list"></div>
-</div>
+                            <div class="dashboard-section">
+                                <h3>🏗️ Aktívne projekty</h3>
+                                <div id="dashboardProjectsList" class="projects-list"></div>
+                            </div>
 
                             <!-- PRACOVNÍCI DNES -->
                             <div class="dashboard-section">
@@ -195,6 +195,56 @@
 
                     <div id="salariesList" class="salaries-container"></div>
                 </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROJECT DETAIL MODAL -->
+    <div id="projectDetailModal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="projectDetailName">Detaily projektu</h2>
+                <button onclick="closeProjectDetail()" style="background: none; border: none; color: white; font-size: 1.5em; cursor: pointer;">✕</button>
+            </div>
+            
+            <div class="project-detail-container">
+                <!-- TOP METRIKY -->
+                <div class="detail-metrics">
+                    <div class="detail-metric">
+                        <div class="detail-metric-label">Celkové hodiny</div>
+                        <div class="detail-metric-value" id="detailTotalHours">0</div>
+                    </div>
+                    <div class="detail-metric">
+                        <div class="detail-metric-label">Pracovníci</div>
+                        <div class="detail-metric-value" id="detailWorkersCount">0</div>
+                    </div>
+                    <div class="detail-metric">
+                        <div class="detail-metric-label">Náklady</div>
+                        <div class="detail-metric-value" id="detailTotalCost">0 €</div>
+                    </div>
+                    <div class="detail-metric">
+                        <div class="detail-metric-label">Dní práce</div>
+                        <div class="detail-metric-value" id="detailWorkDays">0</div>
+                    </div>
+                </div>
+
+                <!-- PRACOVNÍCI -->
+                <div class="detail-section">
+                    <h3>👥 Pracovníci na projekte</h3>
+                    <div id="projectDetailWorkers" class="detail-workers-list"></div>
+                </div>
+
+                <!-- TIMELINE -->
+                <div class="detail-section">
+                    <h3>📅 Činnosť</h3>
+                    <div id="projectDetailTimeline" class="detail-timeline"></div>
+                </div>
+
+                <!-- GRAF -->
+                <div class="detail-section full-width">
+                    <h3>📈 Denný trend</h3>
+                    <canvas id="projectDetailChart" height="80"></canvas>
+                </div>
             </div>
         </div>
     </div>
