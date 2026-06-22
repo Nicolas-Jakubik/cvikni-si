@@ -6,6 +6,7 @@
     <title>CvikniSi - Admin Panel</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 <body class="admin-page">
     <!-- LOGIN MODAL -->
@@ -67,8 +68,72 @@
             <div class="content">
                 <!-- DASHBOARD -->
                 <section id="dashboard" class="section active">
-                    <div class="dashboard-grid">
-                        <div id="dashboard" class="dashboard"></div>
+                    <div class="dashboard-container">
+                        <!-- TOP METRIKY -->
+                        <div class="metrics-row">
+                            <div class="metric-card metric-primary">
+                                <div class="metric-icon">👷</div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Aktívni pracovníci</div>
+                                    <div class="metric-value" id="activeWorkers">0</div>
+                                </div>
+                            </div>
+                            <div class="metric-card metric-success">
+                                <div class="metric-icon">🏗️</div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Projekty</div>
+                                    <div class="metric-value" id="totalProjects">0</div>
+                                </div>
+                            </div>
+                            <div class="metric-card metric-warning">
+                                <div class="metric-icon">⏱️</div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Hodiny dnes</div>
+                                    <div class="metric-value" id="hoursToday">0</div>
+                                </div>
+                            </div>
+                            <div class="metric-card metric-info">
+                                <div class="metric-icon">📊</div>
+                                <div class="metric-content">
+                                    <div class="metric-label">Hodiny mesiac</div>
+                                    <div class="metric-value" id="hoursMonth">0</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PROJEKTY A HODINY -->
+                        <div class="dashboard-grid-2">
+                            <!-- AKTÍVNE PROJEKTY -->
+                            <div class="dashboard-section">
+                                <h3>🏗️ Aktívne projekty</h3>
+                                <div id="projectsList" class="projects-list"></div>
+                            </div>
+
+                            <!-- PRACOVNÍCI DNES -->
+                            <div class="dashboard-section">
+                                <h3>👥 Pracovníci dnes</h3>
+                                <div id="workersList" class="workers-list"></div>
+                            </div>
+                        </div>
+
+                        <!-- MESAČNÝ TREND -->
+                        <div class="dashboard-section full-width">
+                            <h3>📈 Mesačný trend hodín</h3>
+                            <canvas id="trendsChart" height="80"></canvas>
+                        </div>
+
+                        <!-- ROZDELENIE PO PROJEKTOCH -->
+                        <div class="dashboard-grid-2">
+                            <div class="dashboard-section">
+                                <h3>📌 Hodiny podľa projektov</h3>
+                                <div id="projectsStats" class="stats-list"></div>
+                            </div>
+
+                            <div class="dashboard-section">
+                                <h3>💼 Najaktívnejší pracovníci</h3>
+                                <div id="topWorkers" class="stats-list"></div>
+                            </div>
+                        </div>
                     </div>
                 </section>
 

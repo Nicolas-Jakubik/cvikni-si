@@ -555,61 +555,182 @@ async function deleteAttendance(attId) {
 
 async function loadDashboard() {
     try {
-        const { data: employees } = await supabaseClient.from('employees').select('id');
-        const { data: projects } = await supabaseClient.from('projects').select('id');
+        // LOAD ALL DATA
+        const { data: employees } = await supabaseClient.from('employees').select('id, name');
+        const { data: projects } = await supabaseClient.from('projects').select('*').eq('is_active', true);
         
         const today = new Date().toISOString().split('T')[0];
         const { data: todayAttendance } = await supabaseClient
             .from('attendance')
-            .select('hours')
+            .select('hours, employee_id, project_id, employees(name), projects(name)')
             .eq('date', today);
         
-        const totalHoursToday = todayAttendance ? todayAttendance.reduce((sum, att) => sum + parseFloat(att.hours), 0) : 0;
-
         const firstDay = new Date();
         firstDay.setDate(1);
         const monthStart = firstDay.toISOString().split('T')[0];
         
         const { data: monthAttendance } = await supabaseClient
             .from('attendance')
-            .select('hours')
+            .select('hours, employee_id, project_id, date, employees(name), projects(name)')
             .gte('date', monthStart);
-        
-        const totalHoursMonth = monthAttendance ? monthAttendance.reduce((sum, att) => sum + parseFloat(att.hours), 0) : 0;
 
-        const dashboard = document.getElementById('dashboard');
-        if (!dashboard) return;
-        
-        dashboard.innerHTML = `
-            <div class="dashboard-card">
-                <div class="card-icon">👥</div>
-                <div class="card-content">
-                    <div class="card-label">Zamestnanci</div>
-                    <div class="card-value">${employees ? employees.length : 0}</div>
+        // METRIKY
+        const totalHoursToday = todayAttendance ? todayAttendance.reduce((sum, att) => sum + parseFloat(att.hours), 0) : 0;
+        const totalHoursMonth = monthAttendance ? monthAttendance.reduce((sum, att) => sum + parseFloat(att.hours), 0) : 0;
+        const uniqueWorkersToday = new Set(todayAttendance?.map(att => att.employee_id) || []).size;
+
+        document.getElementById('activeWorkers').textContent = uniqueWorkersToday;
+        document.getElementById('totalProjects').textContent = projects ? projects.length : 0;
+        document.getElementById('hoursToday').textContent = totalHoursToday.toFixed(1);
+        document.getElementById('hoursMonth').textContent = totalHoursMonth.toFixed(1);
+
+        // AKTÍVNE PROJEKTY
+        const projectsHours = {};
+        monthAttendance?.forEach(att => {
+            const projName = att.projects?.name || 'Bez projektu';
+            projectsHours[projName] = (projectsHours[projName] || 0) + parseFloat(att.hours);
+        });
+
+        const projectsList = document.getElementById('projectsList');
+        projectsList.innerHTML = '';
+        if (projects && projects.length > 0) {
+            projects.slice(0, 5).forEach(proj => {
+                const hours = projectsHours[proj.name] || 0;
+                const div = document.createElement('div');
+                div.className = 'project-item';
+                div.innerHTML = `
+                    <div class="project-item-header">
+                        <span class="project-name">🏗️ ${proj.name}</span>
+                        <span class="project-status">Aktívny</span>
+                    </div>
+                    <div class="project-info">
+                        <span>⏱️ ${hours.toFixed(1)}h</span>
+                    </div>
+                `;
+                projectsList.appendChild(div);
+            });
+        }
+
+        // PRACOVNÍCI DNES
+        const workersList = document.getElementById('workersList');
+        workersList.innerHTML = '';
+        const workersToday = {};
+        todayAttendance?.forEach(att => {
+            const name = att.employees?.name || 'Neznámy';
+            workersToday[name] = (workersToday[name] || 0) + parseFloat(att.hours);
+        });
+
+        Object.entries(workersToday).forEach(([name, hours]) => {
+            const div = document.createElement('div');
+            div.className = 'worker-item';
+            div.innerHTML = `
+                <div class="project-item-header">
+                    <span class="project-name">👷 ${name}</span>
                 </div>
-            </div>
-            <div class="dashboard-card">
-                <div class="card-icon">📦</div>
-                <div class="card-content">
-                    <div class="card-label">Projekty</div>
-                    <div class="card-value">${projects ? projects.length : 0}</div>
+                <div class="project-info">
+                    <span>⏱️ ${hours.toFixed(1)}h dnes</span>
                 </div>
-            </div>
-            <div class="dashboard-card">
-                <div class="card-icon">⏱️</div>
-                <div class="card-content">
-                    <div class="card-label">Hodiny dnes</div>
-                    <div class="card-value">${totalHoursToday.toFixed(1)}</div>
-                </div>
-            </div>
-            <div class="dashboard-card">
-                <div class="card-icon">📊</div>
-                <div class="card-content">
-                    <div class="card-label">Hodiny mesiac</div>
-                    <div class="card-value">${totalHoursMonth.toFixed(1)}</div>
-                </div>
-            </div>
-        `;
+            `;
+            workersList.appendChild(div);
+        });
+
+        if (Object.keys(workersToday).length === 0) {
+            workersList.innerHTML = '<div class="stat-item"><span class="stat-name">Nikto neštvára dnes</span></div>';
+        }
+
+        // MESAČNÝ TREND
+        const dailyHours = {};
+        monthAttendance?.forEach(att => {
+            dailyHours[att.date] = (dailyHours[att.date] || 0) + parseFloat(att.hours);
+        });
+
+        const sortedDates = Object.keys(dailyHours).sort();
+        const chartLabels = sortedDates.map(d => {
+            const date = new Date(d);
+            return date.getDate() + '.' + (date.getMonth() + 1);
+        });
+        const chartData = sortedDates.map(d => dailyHours[d]);
+
+        const ctx = document.getElementById('trendsChart')?.getContext('2d');
+        if (ctx && window.Chart) {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Hodiny za deň',
+                        data: chartData,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#667eea',
+                        pointBorderColor: '#fff',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#94a3b8', font: { size: 12 } }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94a3b8' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // HODINY PODĽA PROJEKTOV
+        const projectsStats = document.getElementById('projectsStats');
+        projectsStats.innerHTML = '';
+        Object.entries(projectsHours)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .forEach(([name, hours]) => {
+                const div = document.createElement('div');
+                div.className = 'stat-item';
+                div.innerHTML = `
+                    <span class="stat-name">📌 ${name}</span>
+                    <span class="stat-value">${hours.toFixed(1)}h</span>
+                `;
+                projectsStats.appendChild(div);
+            });
+
+        // TOP PRACOVNÍCI
+        const workersStats = {};
+        monthAttendance?.forEach(att => {
+            const name = att.employees?.name || 'Neznámy';
+            workersStats[name] = (workersStats[name] || 0) + parseFloat(att.hours);
+        });
+
+        const topWorkers = document.getElementById('topWorkers');
+        topWorkers.innerHTML = '';
+        Object.entries(workersStats)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .forEach(([name, hours]) => {
+                const div = document.createElement('div');
+                div.className = 'stat-item';
+                div.innerHTML = `
+                    <span class="stat-name">👷 ${name}</span>
+                    <span class="stat-value">${hours.toFixed(1)}h</span>
+                `;
+                topWorkers.appendChild(div);
+            });
+
     } catch (error) {
         console.error('❌ Chyba pri načítaní dashboardu:', error);
     }
