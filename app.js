@@ -617,6 +617,8 @@ async function loadDashboard() {
 
 // ============ VÝPLATY ============
 
+// ============ VÝPLATY ============
+
 async function calculateSalaries() {
     const monthInput = document.getElementById('salaryMonth').value;
     
@@ -633,8 +635,15 @@ async function calculateSalaries() {
         const firstHalfStart = `${year}-${month}-01`;
         const firstHalfEnd = `${year}-${month}-15`;
         const secondHalfStart = `${year}-${month}-16`;
-        const secondHalfEnd = `${year}-${month}-31`;
+        
+        // Posledný deň mesiaca
+        const lastDay = new Date(year, parseInt(month), 0).getDate();
+        const secondHalfEnd = `${year}-${month}-${String(lastDay).padStart(2, '0')}`;
 
+        console.log('📊 Výpočet výplat za:', monthInput);
+        console.log('Rozsahy dátumov:', { firstHalfStart, firstHalfEnd, secondHalfStart, secondHalfEnd });
+
+        // LOAD ZAMESTNANCOV
         const { data: employees, error: empError } = await supabaseClient
             .from('employees')
             .select('*')
@@ -644,6 +653,8 @@ async function calculateSalaries() {
             console.error('❌ Chyba pri načítaní zamestnancov:', empError);
             throw empError;
         }
+
+        console.log('👥 Zamestnanci:', employees);
 
         if (!employees || employees.length === 0) {
             document.getElementById('salariesList').innerHTML = '<div class="empty-state">Žiadni zamestnanci v systéme.</div>';
@@ -670,25 +681,33 @@ async function calculateSalaries() {
         let totalMonthHours = 0;
 
         for (const emp of employees) {
+            console.log(`\n📝 Spracúvam: ${emp.name} (ID: ${emp.id})`);
+
+            // 1. POLOVICA
             const { data: firstHalf, error: fhError } = await supabaseClient
                 .from('attendance')
-                .select('hours')
+                .select('hours, date')
                 .eq('employee_id', emp.id)
                 .gte('date', firstHalfStart)
                 .lte('date', firstHalfEnd);
 
+            console.log(`  1. pol. data:`, firstHalf, 'Error:', fhError);
             const hoursFirstHalf = (firstHalf && !fhError) ? firstHalf.reduce((sum, att) => sum + parseFloat(att.hours || 0), 0) : 0;
             const salaryFirstHalf = hoursFirstHalf * emp.hourly_rate;
+            console.log(`  1. pol: ${hoursFirstHalf}h × ${emp.hourly_rate}€ = ${salaryFirstHalf}€`);
 
+            // 2. POLOVICA
             const { data: secondHalf, error: shError } = await supabaseClient
                 .from('attendance')
-                .select('hours')
+                .select('hours, date')
                 .eq('employee_id', emp.id)
                 .gte('date', secondHalfStart)
                 .lte('date', secondHalfEnd);
 
+            console.log(`  2. pol. data:`, secondHalf, 'Error:', shError);
             const hoursSecondHalf = (secondHalf && !shError) ? secondHalf.reduce((sum, att) => sum + parseFloat(att.hours || 0), 0) : 0;
             const salarySecondHalf = hoursSecondHalf * emp.hourly_rate;
+            console.log(`  2. pol: ${hoursSecondHalf}h × ${emp.hourly_rate}€ = ${salarySecondHalf}€`);
 
             const totalHours = hoursFirstHalf + hoursSecondHalf;
             const totalSalary = salaryFirstHalf + salarySecondHalf;
@@ -706,6 +725,8 @@ async function calculateSalaries() {
                 </tr>
             `;
         }
+
+        console.log(`\n✅ CELKEM: ${totalMonthHours}h = ${totalMonthSalary}€`);
 
         html += `
             <tr style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%); font-weight: 700; border-top: 2px solid #667eea;">
